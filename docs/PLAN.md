@@ -29,8 +29,19 @@ Cannot claim:
 
 ## Model
 
-- Main model: `yolo26n` (Ultralytics). Model name is a config value.
-- Optional comparison later: `yolo11n`, `yolo12n`, same split, seed, imgsz and epochs.
+- Main model: `yolo26n-seg` (Ultralytics), because the primary dataset (WeedyRice-RGBMS-DB) has masks, not boxes.
+  Model name is a config value.
+- Optional comparison later: `yolo11n-seg`, `yolo12n-seg`, same split, seed, imgsz and epochs.
+- Output at inference stays detection only (weed regions logged to CSV, no actuator).
+
+## Target (a goal, not a result)
+
+- Goal: about 0.80 or higher on the held-out **test** split (different site and date from training),
+  measured as mask mAP50 and mask recall for `weedy_rice`, reported together with precision.
+- Pixel accuracy is not used as the headline number: background dominates the image, so it would look high
+  even for a model that finds no weeds.
+- Not guaranteed. The dataset is small (734 images) and the test site differs from the training site.
+  If the goal is missed, the report says so and shows where the model fails.
 
 ## Classes
 
