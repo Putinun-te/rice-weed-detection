@@ -219,6 +219,18 @@ def prepare(cfg: dict, overwrite: bool = False) -> dict:
     return summary
 
 
+def date_columns(csv_path: Path) -> dict[str, Counter]:
+    """Columns where every non-empty value contains a date, with image counts per date."""
+    with open(csv_path, newline="", encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
+    found = {}
+    for col in rows[0] if rows else []:
+        values = [r[col] for r in rows if r[col] and r[col].strip()]
+        if values and all(DATE_RE.search(v) for v in values):
+            found[col] = Counter(to_group(v, "date") for v in values)
+    return found
+
+
 def inspect(cfg: dict) -> None:
     """Print what is in the raw folder, to fill in the config after download."""
     src = cfg["source_dir"]
@@ -234,6 +246,8 @@ def inspect(cfg: dict) -> None:
         print(f"columns of {csv_path.name}: {reader.fieldnames}")
         for r in rows:
             print(f"  {r}")
+        for col, counts in date_columns(csv_path).items():
+            print(f"images per date in column {col!r}: {dict(sorted(counts.items()))}")
     else:
         print(f"metadata csv not found: {csv_path}")
 
