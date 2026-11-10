@@ -16,13 +16,13 @@ RAW=data/raw/weedyrice
 NEED_GB=7
 
 echo "== $(date '+%Y-%m-%d %H:%M:%S') start in $(pwd)"
-echo "== python: $(python --version 2>&1)"
 
-echo "== install requirements"
-python -m pip install -q -r requirements.txt
+# Project env in .venv, so Studio Lab's default env is not changed.
+bash scripts/setup_env.sh
+PY=.venv/bin/python
 
 echo "== unit tests (synthetic data only)"
-python -m pytest -q
+$PY -m pytest -q
 
 echo "== disk"
 df -h "$HOME" | tail -1
@@ -36,13 +36,13 @@ else
     exit 1
   fi
   echo "== download WeedyRice-RGBMS-DB (about 5.3 GB zip, CC BY 4.0, see DATASET.md)"
-  python -m rwd.download mendeley --dataset-id vt4s83pxx6 --version 1 \
+  $PY -m rwd.download mendeley --dataset-id vt4s83pxx6 --version 1 \
     --out "$RAW" --include RGB Masks Metadata
 fi
 
 echo "== inspect raw files (also saved to data/inspect.txt)"
 {
-  python -m rwd.prepare_weedyrice --config configs/weedyrice.yaml --inspect
+  $PY -m rwd.prepare_weedyrice --config configs/weedyrice.yaml --inspect
   echo
   for d in RGB Masks Metadata; do
     if [ -d "$RAW/$d" ]; then
