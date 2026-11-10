@@ -1,5 +1,7 @@
 """End-to-end test of the WeedyRice preparation on a fake raw folder (no real data)."""
 
+from __future__ import annotations
+
 import csv
 
 import numpy as np
@@ -51,6 +53,15 @@ def test_to_group():
     assert to_group(" site A ", "raw") == "site A"
     with pytest.raises(ValueError):
         to_group("no date", "date")
+
+
+def test_date_columns_counts_images_per_date(tmp_path):
+    from rwd.prepare_weedyrice import date_columns
+
+    make_raw(tmp_path / "raw")
+    found = date_columns(tmp_path / "raw/Metadata/image_metadata.csv")
+    assert list(found) == ["DateTimeOriginal"]
+    assert found["DateTimeOriginal"]["2024-06-02"] == 1
 
 
 def test_prepare_whole_images_passes_validation(tmp_path):

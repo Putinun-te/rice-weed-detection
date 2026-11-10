@@ -1,5 +1,7 @@
 """Helpers that build tiny synthetic YOLO datasets for tests. No real images are used."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import numpy as np
