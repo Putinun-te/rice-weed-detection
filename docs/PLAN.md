@@ -1,0 +1,81 @@
+# Phase 1 Plan (draft, awaiting review)
+
+Status: draft. Nothing in this file is a result. No model has been trained yet.
+
+## Situation
+
+- No drone access and no Raspberry Pi 5 right now. Only a MacBook and Amazon SageMaker Studio Lab.
+- Therefore the project runs as **Track B: offline-first, public datasets only**.
+- The model and numbers from the earlier course project are not reused.
+- The Rumex obtusifolius grassland dataset is not rice data and is not used.
+
+## Goal
+
+Build a reproducible pipeline for weed detection in rice fields from UAV RGB images:
+validate data, train on Studio Lab, evaluate on a held-out split, export to NCNN/ONNX,
+and run detection-only inference that logs to CSV.
+
+## What can and cannot be claimed (Track B)
+
+Can claim:
+- Metrics on the held-out split of the public dataset used, with recall always reported.
+
+Cannot claim:
+- Field validation in Thai rice fields.
+- Results on a drone, or any on-board (on-drone) results.
+- Raspberry Pi 5 or other edge-board performance. Laptop CPU numbers are a rough proxy only.
+- Generalisation to fields, seasons, cameras or altitudes not in the held-out split.
+- Fitness for driving a sprayer. The model is detection only and must never be connected to an actuator.
+
+## Model
+
+- Main model: `yolo26n` (Ultralytics). Model name is a config value.
+- Optional comparison later: `yolo11n`, `yolo12n`, same split, seed, imgsz and epochs.
+
+## Classes
+
+- Start: depends on the dataset. The best candidate (WeedyRice-RGBMS-DB) only has weedy rice vs background.
+- Target later: `rice`, `weed`, then weed types (grass, sedge, broadleaf, weedy rice).
+- Early-stage grass weeds and weedy rice look like rice. Expect low recall there.
+
+## Images and GSD
+
+- GSD = (altitude x sensor width) / (focal length x image width in px).
+- Small weeds need roughly 0.3-0.5 cm/px or finer.
+- Train on tiles (1280 px, about 20% overlap) or imgsz 1280.
+- Tiling happens only after the split, so tiles from one image never cross splits.
+
+## Split policy
+
+- Split by field / date / season, never by random image.
+- If a dataset has no field/date metadata, the split is approximate and every number from it is labelled as such.
+- The test split is used once, at the end.
+
+## Training on Studio Lab
+
+- GPU limit: 4 h per session, 4 h per 24 h. Check the GPU with `nvidia-smi` first.
+- Resumable runs: small `save_period`, `resume=True`, fixed seed.
+- At the end of every session, bundle best.pt, last.pt, metrics.json and plots for download.
+- Code reaches Studio Lab by zip upload or a private GitHub repo. Tokens are entered in the Studio Lab terminal only, never in a notebook cell.
+
+## Edge readiness (no hardware)
+
+- Export NCNN and ONNX.
+- Benchmark latency and memory on the MacBook CPU (state the chip model) as a rough proxy.
+- Target board is a config value. A Pi 5 checklist is written but marked untested on hardware.
+- Inference script logs detections with timestamp (and GPS if available) to CSV. Detection only.
+
+## Risks
+
+- Leakage between splits from overlapping or near-duplicate images.
+- Domain gap: public data is not from Thai fields, and may differ in camera, altitude and season.
+- Segmentation masks converted to boxes can give large, misleading boxes for scattered weeds.
+- Roboflow datasets are often pre-augmented and resized, which creates near-duplicates.
+- Licenses that forbid redistribution or commercial use.
+- T4-class GPU and 4 h sessions limit imgsz and epochs.
+
+## Open questions
+
+1. Confirm licenses and metadata of candidate datasets (pending read-only check of source pages).
+2. Code transfer to Studio Lab: zip upload or private GitHub repo.
+3. Detection (boxes) or segmentation (YOLO-seg) if the main dataset only has masks.

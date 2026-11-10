@@ -1,0 +1,31 @@
+# Data and training outputs (never commit images or third-party datasets)
+data/
+runs/
+bundles/
+
+# Model weights and exports
+*.pt
+*.onnx
+*_ncnn_model/
+*.param
+*.bin
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
