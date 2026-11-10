@@ -27,3 +27,8 @@ python -m rwd.validate data/weedyrice_seg/data.yaml --task segment \
 ```
 
 Detection only. This project must never be connected to a sprayer, solenoid or any actuator.
+
+## License
+
+Code: [AGPL-3.0](LICENSE), matching Ultralytics YOLO which this project uses.
+Datasets are not part of this repository and keep their own licenses; see [DATASET.md](DATASET.md).
