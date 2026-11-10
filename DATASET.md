@@ -3,17 +3,36 @@
 No dataset has been downloaded or used yet. No third-party images are committed to this repository.
 None of these datasets are the author's own data.
 
-## Candidates (unverified)
+Checked on 2026-11-11 from the public source pages (read-only, nothing downloaded).
 
-Details below come from web search summaries only. Licenses, image counts and metadata must be
-confirmed on each source page before use.
+## Primary candidate
 
-| Dataset | Source | License (claimed) | Notes |
+### WeedyRice-RGBMS-DB
+
+- Title: A dataset of aligned RGB and multispectral UAV imagery for semantic segmentation of weedy rice
+- Authors: Van Hoa Nguyen, Cong-Doan Le, Minh-Tuyen Truong, Mai-Phung Bui, Thanh-Phong Le
+- Source: [Mendeley Data](https://data.mendeley.com/datasets/vt4s83pxx6), version 1, published 2025-07-21, DOI 10.17632/vt4s83pxx6.1
+- Paper: Data in Brief 63:112237, DOI 10.1016/j.dib.2025.112237 ([PMC12670920](https://pmc.ncbi.nlm.nih.gov/articles/PMC12670920/))
+- License: CC BY 4.0 (stated on Mendeley and in the paper). Attribution required: cite the dataset DOI and the paper.
+- Content: 734 RGB JPG (delivered at 1280x960), 734x4-band multispectral TIF, 734 binary PNG masks (255 = weedy rice, 0 = background), overlays.
+- Capture: DJI Mavic 3 Multispectral, 12 m and 20 m AGL, 09:30-15:30, 55-60 days after sowing. GSD not stated.
+- Location and dates: An Giang Province, Vietnam. Thoaison District on 2024-06-02, 2024-06-04 and 2024-09-30; Longxuyen City on 2025-01-15.
+- Metadata: `Metadata/image_metadata.csv` with acquisition date/time, GPS and altitude. No explicit field id.
+- Splits: "sample" train/val/test text files are provided, but the split method is not stated. This project will build its own split by site and date instead.
+- Limits for this project: only weedy rice is labelled (no `rice` class, no other weed types); masks, not boxes; Vietnam, not Thailand; one growth stage.
+
+## Rejected or secondary
+
+| Dataset | License | What the page shows | Decision |
 |---|---|---|---|
-| WeedyRice-RGBMS-DB | [Mendeley Data](https://data.mendeley.com/datasets/vt4s83pxx6), [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12670920/) | CC-BY 4.0 (to verify) | Mekong Delta, Vietnam; UAV RGB + multispectral; 734 images; 3 seasons; segmentation masks of weedy rice only |
-| Rice-weed-detection | [Roboflow Universe](https://universe.roboflow.com/rig-works/rice-weed-detection) | CC BY 4.0 (to verify) | Capture method and size unknown |
-| UAV Open Dataset of Rice Paddies | [Roboflow Universe](https://universe.roboflow.com/pes-hdrvu/uav-open-dataset-of-rice-paddies) | unknown | UAV rice; weed classes unknown |
-| Weed Detection by UAV50 | [Roboflow Universe](https://universe.roboflow.com/leas/weed-detection-by-uav50) | unknown | One class, no description |
+| [Rice-weed-detection (RIG works, Roboflow)](https://universe.roboflow.com/rig-works/rice-weed-detection) | CC BY 4.0 | 30 images, 1 class `rice` only | Rejected: no weed class, too small |
+| [UAV Open Dataset of Rice Paddies (PES, Roboflow)](https://universe.roboflow.com/pes-hdrvu/uav-open-dataset-of-rice-paddies) | CC BY 4.0 | 600 images, semantic segmentation, classes `RiceSeedling`, `Stressed` | Rejected: no weed class |
+| [Weed Detection by UAV50 (Leas, Roboflow)](https://universe.roboflow.com/leas/weed-detection-by-uav50) | Public Domain | 946 images, 1 class `weeds`, no description, crop unknown | Secondary: train-only extra data, only after visual check that it is rice |
+| [Weed Detection in Paddy fields (WEED, Roboflow)](https://universe.roboflow.com/weed-hdepn/weed-detection-in-paddy-fields) | CC BY 4.0 | 164 images, classes `weed`, `paady`, `paddy` (typo duplicate), no description | Secondary: train-only, needs class merge and viewpoint check |
+| [rice-seedling-and-weed-dataset (Kaggle)](https://www.kaggle.com/datasets/ferox98/riceseedlingandweeddataset) | Unknown | No description | Rejected: license unknown |
+| [crop and weed detection data with bounding boxes (Kaggle)](https://www.kaggle.com/datasets/ravirajsinh45/crop-and-weed-detection-data-with-bounding-boxes) | not checked | Sesame crop, not rice | Rejected: wrong crop |
+
+Roboflow pages give no source, capture method or split information. None of them can be used for validation or test.
 
 ## Used datasets
 
