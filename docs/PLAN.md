@@ -74,6 +74,23 @@ Cannot claim:
 - Licenses that forbid redistribution or commercial use.
 - T4-class GPU and 4 h sessions limit imgsz and epochs.
 
+## Lessons from the old course repos (read-only review)
+
+Prac.IoT-Weedetection:
+- COCO export had two categories, but every annotation (4199 train, 662 test) used category 1
+  (Rumex, "ridderzuring"). Category 0 "grass-weeds" was a Roboflow supercategory with zero instances.
+  The model effectively learned one class, while the yaml declared two.
+- The converter copied COCO `category_id` straight into YOLO class ids. New tooling must map
+  categories explicitly and fail on unknown or empty classes.
+- The split was by image (Roboflow train/test), with no field or date information.
+- README speed figures for Raspberry Pi had no recorded benchmark behind them. Not reused.
+
+Practical-IoT-Drone-Cost-Optimizing:
+- The `yolo26n_ncnn_model` there is the stock COCO model (80 classes, metadata `coco.yaml`),
+  not a weed model. Its `model_ncnn.py` is only a random-tensor smoke test.
+- Useful as a pattern: Ultralytics NCNN export layout (`model.ncnn.param`, `model.ncnn.bin`, `metadata.yaml`).
+- Weights (`*.pt`) were committed to git there. This repo ignores them.
+
 ## Open questions
 
 1. Confirm licenses and metadata of candidate datasets (pending read-only check of source pages).
