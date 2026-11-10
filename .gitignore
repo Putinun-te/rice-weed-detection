@@ -15,6 +15,9 @@ bundles/
 *.tar
 *.tar.gz
 
+# Logs
+*.log
+
 # Secrets
 .env
 .env.*
