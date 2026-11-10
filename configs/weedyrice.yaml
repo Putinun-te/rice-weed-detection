@@ -1,0 +1,41 @@
+# Config for rwd.prepare_weedyrice (WeedyRice-RGBMS-DB, CC BY 4.0, see DATASET.md).
+# Paths are relative to this file's folder.
+#
+# Column names and mask naming are NOT confirmed yet: run with --inspect after download
+# and fix the values marked TODO.
+
+source_dir: ../data/raw/weedyrice
+out_dir: ../data/weedyrice_seg
+
+rgb_dir: RGB
+mask_dir: Masks
+mask_name: "{stem}.png"          # TODO confirm mask file naming
+
+metadata:
+  csv: Metadata/image_metadata.csv
+  filename_column: null          # TODO set after --inspect
+  group_column: null             # TODO capture date/time column
+  group_format: date             # "date" -> YYYY-MM-DD, "raw" -> value as is
+  keep_columns: []               # e.g. altitude column, for results by altitude in Phase 4
+
+# Split by capture date / site, never by random image.
+# Draft: test = Longxuyen (other site and date), val = Thoaison September, train = Thoaison June.
+split_by_group:
+  train: ["2024-06-02", "2024-06-04"]
+  val: ["2024-09-30"]
+  test: ["2025-01-15"]
+drop_unassigned_groups: false
+
+class_name: weedy_rice
+mask_threshold: 127              # mask pixel > threshold = weedy rice (dataset: 255 = weedy rice)
+min_area_px: 20                  # drop tiny regions (annotation noise)
+epsilon_px: 1.0                  # polygon simplification
+
+resize_max_side: null            # images are delivered at 1280x960, no resize needed
+tile:
+  size: null                     # null = whole image (train with imgsz 1280); e.g. 640 to tile
+  overlap: 0.2
+
+jpeg_quality: 95
+max_output_gb: 5                 # stop early to protect the 15 GB Studio Lab disk
+near_dup_bits: 4                 # near-duplicate warning across splits (dHash distance)
