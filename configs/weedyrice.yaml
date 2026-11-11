@@ -13,10 +13,10 @@ mask_name: "{stem}.png"          # TODO confirm mask file naming
 
 metadata:
   csv: Metadata/image_metadata.csv
-  filename_column: null          # TODO set after --inspect
-  group_column: null             # TODO capture date/time column
+  filename_column: original_filename
+  group_column: acquisition_date
   group_format: date             # "date" -> YYYY-MM-DD, "raw" -> value as is
-  keep_columns: []               # e.g. altitude column, for results by altitude in Phase 4
+  keep_columns: [altitude]       # for results by altitude in Phase 4
 
 # Split by capture date / site, never by random image.
 # Draft: test = Longxuyen (other site and date), val = Thoaison September, train = Thoaison June.
