@@ -56,9 +56,13 @@ commit 05a5194). Bundle in `bundles/`. Notebook: `notebooks/02_train.ipynb` (`rw
   into instances by connected components; the model finds the same area but splits or merges it
   differently. Pixel-level check on val (union of predicted masks vs label): precision 0.80,
   recall 0.75, IoU 0.64 at conf 0.25; precision 0.76, recall 0.86 at conf 0.10.
-- Open decision for the owner: keep instance mAP50/recall as the headline (goal 0.80 looks out of
-  reach) or add pixel-level precision/recall/IoU as the main Phase 4 metric, fixed before the test
-  split is touched. The test split has not been used.
+- Decided by the owner (2026-11-12): pixel-level precision/recall/IoU is the headline metric,
+  instance metrics shown next to it (`docs/PLAN.md`, "Metric change"). The test split has not been used.
+- Tooling: `rwd/evaluate.py` + `notebooks/03_evaluate.ipynb`. `--split test` needs `--final`, one
+  `--conf`, and refuses a second run. Val sweep for the first run (pixel precision / recall / IoU):
+  conf 0.05: 0.73 / 0.89 / 0.67; 0.15: 0.78 / 0.84 / 0.68; 0.25: 0.80 / 0.75 / 0.64; 0.5: 0.83 / 0.52 / 0.47.
+- Next (waiting for the owner's OK): one comparison run with `yolo26s-seg` on val, pick model and
+  conf on val, then Phase 4 (single test evaluation, results by altitude) with a separate OK.
 
 ## PC setup (WSL2 Ubuntu, done by the next session with the owner)
 

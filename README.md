@@ -59,3 +59,14 @@ Datasets are not part of this repository and keep their own licenses; see [DATAS
 
 The same steps are in `notebooks/02_train.ipynb`. Settings live in `configs/train.yaml`.
 Training evaluates on the val split only; the test split is used once, in Phase 4.
+
+## Evaluation (Phase 4 tooling)
+
+```bash
+# val: choose the model and the confidence threshold (not a publishable result)
+.venv/bin/python -m rwd.evaluate --weights runs/<name>/weights/best.pt --split val --conf 0.05 0.1 0.15 0.25 0.4 0.5
+```
+
+Headline metric: pixel precision, recall and IoU, with the instance metrics next to it
+(`docs/PLAN.md`). The test split is evaluated once, with `--split test --conf <chosen> --final`.
+The same steps are in `notebooks/03_evaluate.ipynb`.

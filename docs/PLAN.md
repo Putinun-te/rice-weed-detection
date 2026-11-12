@@ -43,6 +43,18 @@ Cannot claim:
 - Not guaranteed. The dataset is small (734 images) and the test site differs from the training site.
   If the goal is missed, the report says so and shows where the model fails.
 
+### Metric change (2026-11-12, owner's OK, before the test split was touched)
+
+- Headline metric is now **pixel-level precision, recall and IoU** for `weedy_rice`: the union of
+  predicted masks against the label mask, pixels pooled over the split (`rwd.evaluate`).
+- Reason: labels are free-form patches cut into instances by connected components. The first run
+  covered the right area but split patches differently, so instance mask mAP50 / recall on val were
+  0.47 / 0.49 while pixel precision / recall were 0.80 / 0.75 at conf 0.25.
+- Instance mask precision, recall and mAP50 are still reported next to the pixel numbers.
+- This change was made after seeing val results and before any test result. Reports must say so.
+- The confidence threshold is chosen on val and fixed before the single test evaluation.
+- The 0.80 goal now refers to pixel recall on the test split, reported with precision and IoU.
+
 ## Classes
 
 - Start: depends on the dataset. The best candidate (WeedyRice-RGBMS-DB) only has weedy rice vs background.
