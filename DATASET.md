@@ -34,6 +34,39 @@ Checked on 2026-11-11 from the public source pages (read-only, nothing downloade
 
 Roboflow pages give no source, capture method or split information. None of them can be used for validation or test.
 
+## Possible later use (not downloaded into this project, not used)
+
+Checked on 2026-11-13: licenses from the source pages, contents from copies the owner already had
+on an external drive (listed without extracting).
+
+### Rice Field Weed BD (Bangladesh)
+
+- Title: A comprehensive dataset of rice field weed detection from Bangladesh
+- Source: [Mendeley Data](https://data.mendeley.com/datasets/mt72bmxz73/4), version 4, published 2024-09-04, DOI 10.17632/mt72bmxz73.4
+- Contributors: Sawkat Ali, Mohammad Rifat Ahmmad Rashid, Tasnim Hossain Orpa, Md Ahsan Kabir, Md Kamrul,
+  Sayam Hossain Bhuiyan Aumy, Mehedi Hasan Mridha, Imam Hossain Sajeeb, Mohammad Manzurul Islam, Taskeed Jabid
+- License: CC BY 4.0 (stated on the Mendeley page)
+- Content: 3632 RGB JPG in 11 class folders, one weed species per folder (for example Cyperus ochraceus,
+  Fimbristylis littoralis, Panicum repens, Paspalum scrobiculatum, Ipomoea aquatica, Marsilea minuta).
+- Capture: smartphone camera, rice fields of Narsingdi and Munshiganj, Bangladesh. Not UAV. Dates not stated.
+- Annotation: class folders only. No boxes or masks.
+- Possible use: a later weed-type classifier (grass / sedge / broadleaf). It cannot train or evaluate
+  the UAV segmentation model.
+
+### CoFly-WeedDB
+
+- Source: [Zenodo](https://zenodo.org/records/6697343), version 1.0, published 2022-06-23, DOI 10.5281/zenodo.6697343
+- Creators: Marios Krestenitis, Emmanuel K. Raptis, Athanasios Ch. Kapoutsis, Konstantinos Ioannidis,
+  Elias B. Kosmatopoulos, Stefanos Vrochidis, Ioannis Kompatsiaris
+- Paper: Data in Brief 45:108575, DOI 10.1016/j.dib.2022.108575
+- License: Creative Commons Attribution 4.0 International (stated on the Zenodo record)
+- Content: 201 annotated RGB images (1280x720) with segmentation masks; 3 weed classes
+  (Johnson grass, field bindweed, purslane).
+- Capture: DJI Phantom 4 Pro, 5 m altitude, cotton field in Larissa, Greece. File names carry GPS and
+  time; all are from 2019-07-03.
+- Limits: cotton, not rice; one field and one date, so no split by field/date is possible.
+- Possible use: train-only extra data or a second test of the mask pipeline. Never validation or test.
+
 ## Used datasets
 
 ### WeedyRice-RGBMS-DB (v1) - the only dataset used so far
