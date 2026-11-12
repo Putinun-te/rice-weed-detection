@@ -1,0 +1,24 @@
+# Same as train.yaml but with the small model (yolo26s-seg), to compare with yolo26n-seg on val.
+
+model: yolo26s-seg.pt            # config value. "-seg" = masks. "yolo26n.pt" would train boxes only.
+data: ../data/weedyrice_seg/data.yaml
+project: ../runs                 # outside git
+name: weedyrice_yolo26s-seg_1280
+
+imgsz: 1280                      # images are 1280x960; fall back to 960 or tiles (640) if memory runs out
+epochs: 100
+patience: 30                     # stop early if val does not improve for 30 epochs
+batch: 2                         # yolo26s-seg at batch 3 filled all 8 GB in the smoke run; batch 2 leaves headroom
+workers: 4
+seed: 0
+deterministic: true
+amp: true
+save_period: 5                   # checkpoint every 5 epochs, so a killed WSL session loses little
+device: 0                        # GPU index, or "cpu"
+
+# Extra Ultralytics train arguments (augmentation etc.). Top-down drone images: vertical flip is safe.
+extra:
+  flipud: 0.5
+  fliplr: 0.5
+  degrees: 0.0
+  plots: true
