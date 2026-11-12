@@ -3,7 +3,7 @@
 Weed detection in rice fields from UAV RGB images, with Ultralytics YOLO trained on
 Amazon SageMaker Studio Lab and exported to NCNN/ONNX for edge boards.
 
-Status: planning (Phase 1). No model, no results. See [docs/PLAN.md](docs/PLAN.md) and [DATASET.md](DATASET.md).
+Status: Phase 2 (data tooling). No model, no results. Next steps: [docs/HANDOFF.md](docs/HANDOFF.md). See [docs/PLAN.md](docs/PLAN.md) and [DATASET.md](DATASET.md).
 
 ## On SageMaker Studio Lab (CPU runtime is enough for data)
 

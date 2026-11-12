@@ -62,12 +62,15 @@ Cannot claim:
 - If a dataset has no field/date metadata, the split is approximate and every number from it is labelled as such.
 - The test split is used once, at the end.
 
-## Training on Studio Lab
+## Training
 
-- GPU limit: 4 h per session, 4 h per 24 h. Check the GPU with `nvidia-smi` first.
+- Main: the owner's PC, WSL2 Ubuntu with an RTX 2080 Super (8 GB, Turing). No session limit.
+- Backup: SageMaker Studio Lab (T4, 4 h per session and per 24 h, Python 3.9, about 15 GB disk).
+- One config and one script for both. Check the GPU (`nvidia-smi`, `torch.cuda.is_available()`) first
+  and record GPU, versions and commit hash in metrics.json.
 - Resumable runs: small `save_period`, `resume=True`, fixed seed.
-- At the end of every session, bundle best.pt, last.pt, metrics.json and plots for download.
-- Code reaches Studio Lab by zip upload or a private GitHub repo. Tokens are entered in the Studio Lab terminal only, never in a notebook cell.
+- At the end of every run, bundle best.pt, last.pt, metrics.json and plots.
+- The repo is public, so no token is needed to clone. Never put tokens in notebook cells.
 
 ## Edge readiness (no hardware)
 
