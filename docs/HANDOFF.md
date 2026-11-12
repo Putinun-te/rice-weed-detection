@@ -9,8 +9,12 @@ First written on the owner's MacBook, updated in the first session on the owner'
 |---|---|
 | 1. Plan | Done and approved. See `docs/PLAN.md`. Track B: public data only, no drone, no Pi. |
 | 2. Data tooling | **Done.** 44 synthetic tests pass (Python 3.12). Real dataset built and validated on the PC, see below. Waiting for the owner's OK. |
-| 3. Training | Started 2026-11-12 with the owner's OK. `rwd/train.py` + `configs/train.yaml` written; torch 2.15.0+cu132 and ultralytics 8.4.211 in `.venv`; CUDA sees the RTX 2080 SUPER; smoke run (1 epoch, 10% of train) passed. Full run: see below. |
-| 4-6 | Not started. |
+| 3. Training | **Three runs done** (2026-11-12/13): `yolo26n-seg`, `yolo26s-seg`, `yolo26s-seg` + stronger augmentation. On val the small model ties the nano model and the augmentation variant is worse. See below. |
+| 4. Test | **Done once for `yolo26n-seg` at conf 0.25** (2026-11-13 00:04). See "Phase 4 result". The other two runs have not touched test. |
+| 5-6 | Not started. |
+
+Start with `notebooks/00_overview.ipynb`: it reads the files on disk and shows the state of every
+phase, the val comparison, the test result and the recent commits. The owner works from notebooks.
 
 Decisions already made by the owner:
 - Model: `yolo26n-seg` (Ultralytics), model name is a config value.
@@ -57,12 +61,54 @@ commit 05a5194). Bundle in `bundles/`. Notebook: `notebooks/02_train.ipynb` (`rw
   differently. Pixel-level check on val (union of predicted masks vs label): precision 0.80,
   recall 0.75, IoU 0.64 at conf 0.25; precision 0.76, recall 0.86 at conf 0.10.
 - Decided by the owner (2026-11-12): pixel-level precision/recall/IoU is the headline metric,
-  instance metrics shown next to it (`docs/PLAN.md`, "Metric change"). The test split has not been used.
+  instance metrics shown next to it (`docs/PLAN.md`, "Metric change"). The test split was used later, see "Phase 4 result".
 - Tooling: `rwd/evaluate.py` + `notebooks/03_evaluate.ipynb`. `--split test` needs `--final`, one
   `--conf`, and refuses a second run. Val sweep for the first run (pixel precision / recall / IoU):
   conf 0.05: 0.73 / 0.89 / 0.67; 0.15: 0.78 / 0.84 / 0.68; 0.25: 0.80 / 0.75 / 0.64; 0.5: 0.83 / 0.52 / 0.47.
-- Next (waiting for the owner's OK): one comparison run with `yolo26s-seg` on val, pick model and
-  conf on val, then Phase 4 (single test evaluation, results by altitude) with a separate OK.
+
+## Phase 3 comparison (PC, 2026-11-13) - val only, not publishable
+
+Same data, imgsz 1280, 100 epochs, seed 0. Configs: `configs/train.yaml`, `train_s.yaml`,
+`train_s_aug.yaml` (scale 0.7, hsv_v 0.5, hsv_s 0.8). The s runs use batch 2 (batch 3 filled 8 GB).
+Val is 41 images from one date, so small differences mean nothing.
+
+| Run | Minutes | Best pixel IoU (conf) | Pixel P / R at that conf | Instance mask P / R / mAP50 |
+|---|---|---|---|---|
+| `yolo26n-seg` | 50 | 0.678 (0.15) | 0.78 / 0.84 | 0.52 / 0.49 / 0.47 |
+| `yolo26s-seg` | 79 | 0.686 (0.10) | 0.81 / 0.82 | 0.60 / 0.50 / 0.52 |
+| `yolo26s-seg` + aug | 100 | 0.664 (0.10) | 0.82 / 0.78 | 0.51 / 0.44 / 0.41 |
+
+Reading: a bigger model and stronger augmentation do not move val. The limit looks like the data
+(two training dates), not model size. `yolo26n-seg` stays the model.
+
+## Phase 4 result (PC, 2026-11-13) - held-out test, publishable with recall
+
+`yolo26n-seg` at conf 0.25, evaluated once on test (247 images, Long Xuyen, 2025-01-15, a site and
+date not in train or val). File: `runs/weedyrice_yolo26n-seg_1280/eval_test.json`, written
+2026-11-13 00:04 (shown in the test cell of `notebooks/03_evaluate.ipynb`). Conf 0.25 was the notebook
+default, not the val optimum (0.15), and it was not tuned on test.
+
+| Group | Images | Pixel precision | Pixel recall | Pixel IoU |
+|---|---|---|---|---|
+| All | 247 | 0.889 | 0.697 | 0.641 |
+| 12 m | 61 | 0.960 | 0.665 | 0.647 |
+| 20 m | 186 | 0.859 | 0.712 | 0.638 |
+
+Instance masks on test: precision 0.283, recall 0.223, mAP50 0.181, mAP50-95 0.060.
+The goal of mask mAP50 and recall around 0.80 is not met. At pixel level the model is rarely wrong
+when it marks weedy rice but misses about 30% of the weedy-rice area.
+
+Rules from here: the script refuses a second test run for this model. Any other model evaluated on
+this test split is a second look and must be labelled as such. Do not re-run test at another conf.
+
+## Next steps
+
+1. Owner decides: stop model work here and go to Phase 5 with `yolo26n-seg`, or try one more idea
+   on val (a semantic-segmentation model, or CoFly-WeedDB as train-only extra, see `DATASET.md`).
+2. No drone is available, so new field data is not planned. The only UAV weedy-rice dataset found
+   (2026-11-13 search) is the one already used.
+3. Notebooks keep their outputs locally; the `nbstrip` git filter (set by `scripts/setup_env.sh`)
+   commits them without outputs, so no third-party image reaches git.
 
 ## PC setup (WSL2 Ubuntu, done by the next session with the owner)
 
