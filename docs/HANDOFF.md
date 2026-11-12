@@ -45,6 +45,21 @@ The open issue is resolved. Facts from the real download (`data/inspect.txt` has
 Environment note: the `.venv` found on the PC was Python 3.14 with no packages, so it was recreated
 with `uv python install 3.12` and `PY_BASE="$(uv python find 3.12)" bash scripts/setup_env.sh`.
 
+## Phase 3 first run (PC, 2026-11-12) - val only, not publishable
+
+Run `runs/weedyrice_yolo26n-seg_1280` (yolo26n-seg, imgsz 1280, batch 3, 100 epochs, 49.6 min,
+commit 05a5194). Bundle in `bundles/`. Notebook: `notebooks/02_train.ipynb` (`rwd.train --auto`).
+
+- Val (41 images, model selection only): mask precision 0.52, recall 0.49, mAP50 0.47, mAP50-95 0.20.
+  Flat over the last 20 epochs (mAP50 0.445 +/- 0.02), so more epochs alone will not help.
+- Diagnosis: the instance metric punishes how blobs are split. Masks are amorphous patches cut
+  into instances by connected components; the model finds the same area but splits or merges it
+  differently. Pixel-level check on val (union of predicted masks vs label): precision 0.80,
+  recall 0.75, IoU 0.64 at conf 0.25; precision 0.76, recall 0.86 at conf 0.10.
+- Open decision for the owner: keep instance mAP50/recall as the headline (goal 0.80 looks out of
+  reach) or add pixel-level precision/recall/IoU as the main Phase 4 metric, fixed before the test
+  split is touched. The test split has not been used.
+
 ## PC setup (WSL2 Ubuntu, done by the next session with the owner)
 
 1. Check the GPU from WSL: `nvidia-smi` must show the RTX 2080 SUPER. The NVIDIA driver is
