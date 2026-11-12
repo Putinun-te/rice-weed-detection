@@ -9,7 +9,7 @@ First written on the owner's MacBook, updated in the first session on the owner'
 |---|---|
 | 1. Plan | Done and approved. See `docs/PLAN.md`. Track B: public data only, no drone, no Pi. |
 | 2. Data tooling | **Done.** 44 synthetic tests pass (Python 3.12). Real dataset built and validated on the PC, see below. Waiting for the owner's OK. |
-| 3. Training | Not started. Needs the owner's OK after Phase 2. PyTorch is not installed yet. |
+| 3. Training | Started 2026-11-12 with the owner's OK. `rwd/train.py` + `configs/train.yaml` written; torch 2.15.0+cu132 and ultralytics 8.4.211 in `.venv`; CUDA sees the RTX 2080 SUPER; smoke run (1 epoch, 10% of train) passed. Full run: see below. |
 | 4-6 | Not started. |
 
 Decisions already made by the owner:

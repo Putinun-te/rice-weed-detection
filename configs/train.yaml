@@ -1,0 +1,25 @@
+# Config for rwd.train (Phase 3). Paths are relative to this file's folder.
+# The same file is used on the PC (RTX 2080 SUPER 8 GB) and on Studio Lab (T4).
+
+model: yolo26n-seg.pt            # config value. "-seg" = masks. "yolo26n.pt" would train boxes only.
+data: ../data/weedyrice_seg/data.yaml
+project: ../runs                 # outside git
+name: weedyrice_yolo26n-seg_1280
+
+imgsz: 1280                      # images are 1280x960; fall back to 960 or tiles (640) if memory runs out
+epochs: 100
+patience: 30                     # stop early if val does not improve for 30 epochs
+batch: 4                         # fixed (not auto) so a resumed run is the same; fits 8 GB with AMP
+workers: 4
+seed: 0
+deterministic: true
+amp: true
+save_period: 5                   # checkpoint every 5 epochs, so a killed WSL session loses little
+device: 0                        # GPU index, or "cpu"
+
+# Extra Ultralytics train arguments (augmentation etc.). Top-down drone images: vertical flip is safe.
+extra:
+  flipud: 0.5
+  fliplr: 0.5
+  degrees: 0.0
+  plots: true
