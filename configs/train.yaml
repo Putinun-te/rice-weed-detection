@@ -9,7 +9,7 @@ name: weedyrice_yolo26n-seg_1280
 imgsz: 1280                      # images are 1280x960; fall back to 960 or tiles (640) if memory runs out
 epochs: 100
 patience: 30                     # stop early if val does not improve for 30 epochs
-batch: 4                         # fixed (not auto) so a resumed run is the same; fits 8 GB with AMP
+batch: 3                         # fixed (not auto) so a resumed run is the same; batch 4 used 7.1 of 8 GB in the smoke run
 workers: 4
 seed: 0
 deterministic: true
