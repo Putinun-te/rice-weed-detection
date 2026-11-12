@@ -24,3 +24,7 @@ echo "== register Jupyter kernel 'Python (rwd)'"
 .venv/bin/python -m ipykernel install --user --name rwd --display-name "Python (rwd)" >/dev/null
 
 echo "== env ready: $(.venv/bin/python --version 2>&1) at $(pwd)/.venv"
+
+echo "== git filter: keep notebook outputs out of commits"
+git config filter.nbstrip.clean ".venv/bin/python scripts/nbstrip.py"
+git config filter.nbstrip.smudge cat
