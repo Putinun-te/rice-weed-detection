@@ -66,15 +66,66 @@ def to_group(value: str, fmt: str) -> str:
     raise ValueError(f"group_format must be 'date' or 'raw', got {fmt!r}")
 
 
-def read_metadata(cfg: dict) -> dict[str, dict]:
-    """Map lower-case file stem -> metadata row."""
-    meta = cfg["metadata"]
-    csv_path = cfg["source_dir"] / meta["csv"]
+def _read_csv(csv_path: Path) -> tuple[list[dict], list[str]]:
     with open(csv_path, newline="", encoding="utf-8-sig") as f:
-        rows = list(csv.DictReader(f))
+        reader = csv.DictReader(f)
+        rows = list(reader)
+        columns = list(reader.fieldnames or [])
     if not rows:
         raise ValueError(f"{csv_path} is empty")
-    columns = list(rows[0])
+    return rows, columns
+
+
+def _stem_key(filename: str) -> str:
+    return Path(filename.strip().replace("\\", "/")).stem.lower()
+
+
+def filter_rows(rows: list[dict], row_filter: dict | None, csv_name: str = "csv") -> list[dict]:
+    """Keep rows whose columns equal the configured values (a value or a list of values)."""
+    if not row_filter:
+        return rows
+    kept = rows
+    for col, wanted in row_filter.items():
+        if col not in rows[0]:
+            raise ValueError(f"metadata.row_filter column {col!r} is not in {csv_name}. Columns: {list(rows[0])}")
+        allowed = {str(v).strip() for v in (wanted if isinstance(wanted, (list, tuple)) else [wanted])}
+        kept = [r for r in kept if r[col].strip() in allowed]
+    if not kept:
+        raise ValueError(f"metadata.row_filter {row_filter} keeps no row of {csv_name}")
+    return kept
+
+
+def read_filename_mapping(cfg: dict) -> dict[str, str] | None:
+    """Map lower-case stem in the metadata CSV -> lower-case stem of the file on disk, or None if unused."""
+    mapping_cfg = cfg["metadata"].get("filename_mapping")
+    if not mapping_cfg:
+        return None
+    csv_path = cfg["source_dir"] / mapping_cfg["csv"]
+    rows, columns = _read_csv(csv_path)
+    src_col, dst_col = mapping_cfg["from_column"], mapping_cfg["to_column"]
+    for col in (src_col, dst_col):
+        if col not in columns:
+            raise ValueError(f"filename_mapping column {col!r} is not in {csv_path.name}. Columns: {columns}")
+    mapping = {}
+    for r in rows:
+        src, dst = _stem_key(r[src_col]), _stem_key(r[dst_col])
+        if src in mapping and mapping[src] != dst:
+            raise ValueError(f"{csv_path.name} maps {src!r} to two different files")
+        mapping[src] = dst
+    return mapping
+
+
+def read_metadata(cfg: dict) -> dict[str, dict]:
+    """Map lower-case file stem (as on disk) -> metadata row.
+
+    Optional config:
+      metadata.row_filter: {column: value or [values]}  keep only these rows (e.g. sensor_type: RGB)
+      metadata.filename_mapping: {csv, from_column, to_column}  when files on disk are named
+        differently from metadata.filename_column (e.g. original -> standardized names)
+    """
+    meta = cfg["metadata"]
+    csv_path = cfg["source_dir"] / meta["csv"]
+    rows, columns = _read_csv(csv_path)
     for key in ("filename_column", "group_column"):
         col = meta.get(key)
         if not col or col not in columns:
@@ -82,13 +133,23 @@ def read_metadata(cfg: dict) -> dict[str, dict]:
     for col in meta.get("keep_columns") or []:
         if col not in columns:
             raise ValueError(f"metadata.keep_columns has {col!r}, not in columns {columns}")
+    rows = filter_rows(rows, meta.get("row_filter"), csv_path.name)
+    mapping = read_filename_mapping(cfg)
 
     by_stem = {}
+    unmapped = []
     for r in rows:
-        stem = Path(r[meta["filename_column"]].strip().replace("\\", "/")).stem.lower()
+        stem = _stem_key(r[meta["filename_column"]])
+        if mapping is not None:
+            if stem not in mapping:
+                unmapped.append(stem)
+                continue
+            stem = mapping[stem]
         if stem in by_stem:
             raise ValueError(f"file {stem!r} appears twice in {csv_path.name}")
         by_stem[stem] = r
+    if unmapped:
+        raise ValueError(f"{len(unmapped)} metadata row(s) have no entry in the filename mapping, e.g. {unmapped[:3]}")
     return by_stem
 
 
@@ -219,12 +280,12 @@ def prepare(cfg: dict, overwrite: bool = False) -> dict:
     return summary
 
 
-def date_columns(csv_path: Path) -> dict[str, Counter]:
-    """Columns where every non-empty value contains a date, with image counts per date."""
-    with open(csv_path, newline="", encoding="utf-8-sig") as f:
-        rows = list(csv.DictReader(f))
+def date_columns(csv_path: Path, row_filter: dict | None = None) -> dict[str, Counter]:
+    """Columns where every non-empty value contains a date, with row counts per date."""
+    rows, _ = _read_csv(csv_path)
+    rows = filter_rows(rows, row_filter, csv_path.name)
     found = {}
-    for col in rows[0] if rows else []:
+    for col in rows[0]:
         values = [r[col] for r in rows if r[col] and r[col].strip()]
         if values and all(DATE_RE.search(v) for v in values):
             found[col] = Counter(to_group(v, "date") for v in values)
@@ -247,7 +308,17 @@ def inspect(cfg: dict) -> None:
         for r in rows:
             print(f"  {r}")
         for col, counts in date_columns(csv_path).items():
-            print(f"images per date in column {col!r}: {dict(sorted(counts.items()))}")
+            print(f"rows per date in column {col!r} (all rows): {dict(sorted(counts.items()))}")
+        row_filter = cfg["metadata"].get("row_filter")
+        if row_filter:
+            for col, counts in date_columns(csv_path, row_filter).items():
+                print(f"rows per date in column {col!r} with row_filter {row_filter}: {dict(sorted(counts.items()))}")
+        mapping = cfg["metadata"].get("filename_mapping")
+        if mapping:
+            rgb_dir = src / cfg["rgb_dir"]
+            on_disk = {p.stem.lower() for p in rgb_dir.iterdir()} if rgb_dir.exists() else set()
+            mapped = set(read_filename_mapping(cfg).values())
+            print(f"filename_mapping: {len(on_disk & mapped)} of {len(on_disk)} files in {cfg['rgb_dir']}/ are mapped")
     else:
         print(f"metadata csv not found: {csv_path}")
 
