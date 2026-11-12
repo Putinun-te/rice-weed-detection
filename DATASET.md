@@ -1,6 +1,6 @@
 # Datasets
 
-No dataset has been downloaded or used yet. No third-party images are committed to this repository.
+WeedyRice-RGBMS-DB has been downloaded to `data/raw/` (outside git). No third-party images are committed to this repository.
 None of these datasets are the author's own data.
 
 Checked on 2026-11-11 from the public source pages (read-only, nothing downloaded).
@@ -36,5 +36,29 @@ Roboflow pages give no source, capture method or split information. None of them
 
 ## Used datasets
 
-None yet. For each dataset used, record: name, URL, version or download date, license,
-required attribution text, classes, image count, and which split it is used in.
+### WeedyRice-RGBMS-DB (v1) - the only dataset used so far
+
+- Downloaded 2026-11-12 from Mendeley Data (DOI 10.17632/vt4s83pxx6.1), version 1, with
+  `rwd.download` (`--include RGB Masks Metadata`; the multispectral TIFs were not extracted).
+- License: CC BY 4.0. Attribution to use in any report or model card:
+  Nguyen, V. H., Le, C.-D., Truong, M.-T., Bui, M.-P., Le, T.-P. (2025). *WeedyRice-RGBMS-DB:
+  A dataset of aligned RGB and multispectral UAV imagery for semantic segmentation of weedy rice.*
+  Mendeley Data, V1, doi:10.17632/vt4s83pxx6.1, and the Data in Brief paper doi:10.1016/j.dib.2025.112237.
+- Verified content: 734 RGB JPG at 1280x960, 734 PNG masks (values 0 and 255 only, same stem as the
+  JPG), no empty mask. Weedy rice covers 32% of the pixels on average (median 24%, max 90%), so the
+  patches are large, not single plants. All RGB images come from camera FC6520.
+- Metadata: `image_metadata.csv` has 5 rows per capture (1 RGB + 4 multispectral bands); only rows with
+  `sensor_type == RGB` are used. Files on disk use the *standardized* names from `filename_mapping.csv`.
+- Class: `weedy_rice` only (id 0). Converted to YOLO-seg polygons by `rwd.prepare_weedyrice`
+  (mask vs re-drawn polygon IoU 0.997 mean, 0.954 min over 120 sampled images).
+- Split by capture date and site (`configs/weedyrice.yaml`), whole images, no tiles:
+
+  | Split | Dates | Site | Images | Polygons | Altitude |
+  |---|---|---|---|---|---|
+  | train | 2024-06-02, 2024-06-04 | Thoai Son (two fields about 1 km apart) | 446 | 3439 | 20 m |
+  | val | 2024-09-30 | Thoai Son (same field as 2024-06-04, later season) | 41 | 388 | 20 m |
+  | test | 2025-01-15 | Long Xuyen (about 7 km away) | 247 | 2516 | 20 m (183), 12 m (61), 21 m (3) |
+
+  Validator: no label errors, no exact or near-duplicate images across splits, no group leakage.
+- Known gaps: 12 m flights exist only in the test split, and the test field has denser, more
+  fragmented weed patches than the training fields. The validation split is small (41 images).

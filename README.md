@@ -32,7 +32,7 @@ bash scripts/setup_env.sh                             # or: uv venv .venv && uv 
 python -m rwd.download mendeley --dataset-id vt4s83pxx6 --version 1 \
     --out data/raw/weedyrice --include RGB Masks Metadata
 
-# 2. look at the raw files, then fill the TODO values in configs/weedyrice.yaml
+# 2. look at the raw files (config values are already confirmed for WeedyRice v1)
 python -m rwd.prepare_weedyrice --config configs/weedyrice.yaml --inspect
 
 # 3. build the YOLO-seg dataset (split by capture date) and validate it
