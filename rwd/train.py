@@ -12,6 +12,7 @@ Usage:
     python -m rwd.train --config configs/train.yaml --smoke     # 1 short epoch on 10% of train
     python -m rwd.train --config configs/train.yaml             # full run
     python -m rwd.train --config configs/train.yaml --resume    # continue a stopped run
+    python -m rwd.train --config configs/train.yaml --auto      # start, continue, or skip if finished
 """
 
 from __future__ import annotations
@@ -126,12 +127,22 @@ def bundle(run_dir: Path, bundles_dir: Path) -> Path:
     return out
 
 
+def run_state(run_dir: Path) -> str:
+    """'new' (nothing to continue), 'resumable' (last.pt but not finished) or 'finished' (metrics.json written)."""
+    if (run_dir / "metrics.json").exists():
+        return "finished"
+    if (run_dir / "weights" / "last.pt").exists():
+        return "resumable"
+    return "new"
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True)
     ap.add_argument("--check", action="store_true", help="print GPU and versions, check the dataset, then stop")
     ap.add_argument("--smoke", action="store_true", help="1 epoch on 10%% of train to test the pipeline and memory")
     ap.add_argument("--resume", action="store_true", help="continue from runs/<name>/weights/last.pt")
+    ap.add_argument("--auto", action="store_true", help="start a new run, continue a stopped one, or do nothing if finished")
     args = ap.parse_args(argv)
 
     cfg = load_train_config(args.config)
@@ -148,6 +159,14 @@ def main(argv: list[str] | None = None) -> int:
     targs = train_args(cfg, smoke=args.smoke)
     run_dir = Path(targs["project"]) / targs["name"]
     last = run_dir / "weights" / "last.pt"
+    if args.auto and not args.smoke:
+        state = run_state(run_dir)
+        print(f"run {run_dir.name}: {state}")
+        if state == "finished":
+            print(f"already finished, see {run_dir / 'metrics.json'}. Change `name` in the config for a new run.")
+            return 0
+        args.resume = state == "resumable"
+        targs["exist_ok"] = True  # a folder without last.pt (killed before epoch 1) is started again
     start = time.time()
     if args.resume:
         if not last.exists():
@@ -155,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
         model = YOLO(str(last))
         model.train(resume=True)
     else:
-        if run_dir.exists() and not args.smoke:
+        if run_dir.exists() and not args.smoke and not args.auto:
             raise SystemExit(f"{run_dir} already exists. Use --resume, or change `name` in the config.")
         model = YOLO(cfg["model"])
         model.train(**targs)

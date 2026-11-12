@@ -49,3 +49,13 @@ Detection only. This project must never be connected to a sprayer, solenoid or a
 
 Code: [AGPL-3.0](LICENSE), matching Ultralytics YOLO which this project uses.
 Datasets are not part of this repository and keep their own licenses; see [DATASET.md](DATASET.md).
+
+## Training (Phase 3)
+
+```bash
+.venv/bin/python -m rwd.train --config configs/train.yaml --check   # GPU and dataset check
+.venv/bin/python -m rwd.train --config configs/train.yaml --auto    # start, continue a stopped run, or skip if finished
+```
+
+The same steps are in `notebooks/02_train.ipynb`. Settings live in `configs/train.yaml`.
+Training evaluates on the val split only; the test split is used once, in Phase 4.

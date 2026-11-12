@@ -8,7 +8,7 @@ import tarfile
 import pytest
 import yaml
 
-from rwd.train import bundle, check_device, load_train_config, task_of, train_args, write_metrics
+from rwd.train import run_state, bundle, check_device, load_train_config, task_of, train_args, write_metrics
 
 BASE = {"model": "yolo26n-seg.pt", "data": "ds/data.yaml", "project": "runs", "name": "run1",
         "imgsz": 1280, "epochs": 100, "batch": 4, "seed": 0}
@@ -69,3 +69,14 @@ def test_metrics_and_bundle(tmp_path):
     tar_path = bundle(run, tmp_path / "bundles")
     names = set(tarfile.open(tar_path).getnames())
     assert {"run1/weights/best.pt", "run1/weights/last.pt", "run1/metrics.json", "run1/results.png"} <= names
+
+
+def test_run_state(tmp_path):
+    run = tmp_path / "run1"
+    assert run_state(run) == "new"
+    (run / "weights").mkdir(parents=True)
+    assert run_state(run) == "new"  # killed before the first checkpoint
+    (run / "weights/last.pt").write_bytes(b"w")
+    assert run_state(run) == "resumable"
+    (run / "metrics.json").write_text("{}")
+    assert run_state(run) == "finished"
