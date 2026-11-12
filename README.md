@@ -15,6 +15,7 @@ cd ~ && git clone https://github.com/Putinun-te/rice-weed-detection.git
 bash ~/rice-weed-detection/scripts/setup_env.sh
 ```
 
+Start with `notebooks/00_overview.ipynb` to see what has been done so far.
 Then either open `notebooks/01_data_setup.ipynb` and pick **Kernel → Change Kernel → Python (rwd)**,
 or run everything from a terminal in the background:
 

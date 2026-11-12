@@ -131,7 +131,7 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
         per_conf[key] = {"all": summarize(rows), "by_altitude": summarize(rows, "altitude"), "by_group": summarize(rows, "group")}
 
     val = model.val(data=str(data_yaml), split=split, imgsz=imgsz, device=device, plots=False, verbose=False,
-                    project=str(weights.parent.parent), name=f"eval_{split}_instance", exist_ok=True)
+                    project=str(weights.resolve().parent.parent), name=f"eval_{split}_instance", exist_ok=True)
     instance = {k: round(float(v), 4) for k, v in val.results_dict.items() if "(M)" in k}
     return {"weights": str(weights), "data": str(data_yaml), "split": split, "imgsz": imgsz, "images": len(images),
             "headline": "pixel precision / recall / IoU (union of predicted masks vs label mask)",
