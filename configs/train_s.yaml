@@ -1,3 +1,5 @@
+# OPTIONAL experiment, not the chosen model (that is configs/train.yaml, yolo26n-seg). Kept so the
+# comparison can be repeated. Result: no gain on val, see docs/HANDOFF.md "Phase 3 comparison".
 # Same as train.yaml but with the small model (yolo26s-seg), to compare with yolo26n-seg on val.
 
 model: yolo26s-seg.pt            # config value. "-seg" = masks. "yolo26n.pt" would train boxes only.

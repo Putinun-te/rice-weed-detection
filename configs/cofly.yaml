@@ -1,3 +1,5 @@
+# OPTIONAL experiment, not the chosen model (that is configs/train.yaml, yolo26n-seg). Kept so the
+# comparison can be repeated. Result: no gain on val, see docs/HANDOFF.md "Phase 3 comparison".
 # Config for rwd.add_extra: WeedyRice dataset + CoFly-WeedDB as a train-only second class.
 # CoFly-WeedDB: Zenodo 10.5281/zenodo.6697343, CC BY 4.0, cotton field, see DATASET.md.
 # Its weeds are not weedy rice, so they become class 1 `other_weed`. Val and test stay WeedyRice only.

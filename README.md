@@ -85,3 +85,12 @@ The same steps are in `notebooks/03_evaluate.ipynb`.
 The same steps are in `notebooks/05_export_infer.ipynb`. `rwd.infer` only writes a CSV log (and optional
 overlay images): detection only, never connected to an actuator. CPU timings describe the computer they
 were measured on; nothing has been run on a Raspberry Pi (`docs/EDGE_CHECKLIST.md` is untested).
+
+## What is used and what is optional
+
+| Part | Status |
+|---|---|
+| `configs/train.yaml`, run `weedyrice_yolo26n-seg_1280` | **Used.** The chosen model, the only one evaluated on test. |
+| Notebooks 00, 01, 02, 03, 05 | **Used.** Overview, data, training, evaluation, export and inference. |
+| `configs/train_s.yaml`, `configs/train_s_aug.yaml` | Optional. Larger model and stronger augmentation; no gain on val. |
+| `configs/cofly.yaml`, `configs/train_cofly.yaml`, `rwd/add_extra.py`, notebook 04 | Optional. CoFly-WeedDB as an extra class; no gain on val. |

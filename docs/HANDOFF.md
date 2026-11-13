@@ -131,6 +131,18 @@ Code: `rwd/export.py`, `rwd/infer.py`, `rwd/benchmark.py`; extra packages in `re
   nothing found. Detection only, no actuator.
 - `rwd.evaluate` takes `--imgsz H W` and `--tag` for exported models; `--tag` is refused on test.
 
+## Used and optional, and what was cleaned up (2026-11-13)
+
+Used: `configs/train.yaml` and run `weedyrice_yolo26n-seg_1280`. Optional (kept, marked OPTIONAL in the
+files): `train_s.yaml`, `train_s_aug.yaml`, `train_cofly.yaml`, `cofly.yaml`, notebook 04.
+
+Deleted from disk on the owner's request (nothing in git, about 7 GB): per-epoch checkpoints of all
+finished runs, the two smoke runs and their logs, the CoFly zip (re-downloadable), the combined dataset
+`data/weedyrice_cofly_seg` (rebuilt by notebook 04 from `data/raw/cofly`), the bundles of the three
+optional runs and `yolo26s-seg.pt`. Kept for every run: `best.pt`, `last.pt`, `results.csv`,
+`metrics.json`, `eval_val.json`, so `00_overview.ipynb` still shows the comparison. Finished runs can no
+longer be resumed from a mid-run checkpoint.
+
 ## Next steps
 
 1. Model work is stopped (owner, 2026-11-13): `yolo26n-seg` first run is the model. Four other
