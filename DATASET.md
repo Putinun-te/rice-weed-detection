@@ -66,6 +66,13 @@ on an external drive (listed without extracting).
   time; all are from 2019-07-03.
 - Limits: cotton, not rice; one field and one date, so no split by field/date is possible.
 - Possible use: train-only extra data or a second test of the mask pipeline. Never validation or test.
+- Downloaded 2026-11-13 from the Zenodo record (1,198,780,322 bytes, zip tested). Only the 201 labelled
+  images, `labels_1d/` and the split files were extracted to `data/raw/cofly/` (437 MB, not in git).
+  The other 165 images have no labels. Zenodo file: `CoFly-WeedDB.zip`.
+- Checked after download: `labels_1d` is a class-id mask (0 background, 1-3 weed classes; weed pixels are
+  about 5% of the area). Masks are coarse hand-drawn polygons over cotton rows and bare soil, not rice
+  paddy. The 3 weed classes are not weedy rice. Not used for training or evaluation so far.
+- Attribution if used: Krestenitis et al., CoFly-WeedDB, Data in Brief 45:108575 (2022), CC BY 4.0.
 
 ## Used datasets
 
