@@ -69,6 +69,7 @@ dataset of aligned RGB and multispectral UAV imagery for semantic segmentation o
 V1, doi:[10.17632/vt4s83pxx6.1](https://doi.org/10.17632/vt4s83pxx6.1); Data in Brief,
 doi:[10.1016/j.dib.2025.112237](https://doi.org/10.1016/j.dib.2025.112237).
 Source files for the numbers on this page: [`results/`](results/).
+Model files: [release v1.0.0](https://github.com/Putinun-te/rice-weed-detection/releases/tag/v1.0.0).
 
 ## What cannot be claimed
 

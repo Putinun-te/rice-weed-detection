@@ -155,6 +155,12 @@ The MacBook numbers were entered by the session on the Mac from its own
 `phase6/benchmark_cpu_Darwin_arm64.json`. That file is not in git (`phase6/` is ignored), so the
 numbers were not cross-checked from the PC.
 
+Published 2026-11-13 with the owner's OK: result files in `docs/results/` (test only, no validation
+scores) and GitHub Release v1.0.0 with the model as `.pt`, ONNX and NCNN (https://github.com/Putinun-te/rice-weed-detection/releases/tag/v1.0.0).
+The release copy of `best.pt` has the same weights as the evaluated model; local paths and validation
+scores were removed from its metadata, and the ONNX/NCNN files were exported again from that copy and
+checked on val (same pixel scores). The original files stay in `runs/` on the PC only.
+
 If someone picks this up again:
 1. The limit is data, not model size: two training dates, one region. New UAV data from other fields
    and dates is the change most likely to help. Keep one site/date untouched as a new test split.
