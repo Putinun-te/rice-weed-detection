@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 
-from rwd.benchmark import summarize
+from rwd.benchmark import peak_rss_mb, summarize
 from rwd.export import export_record, size_mb
 from rwd.infer import FIELDS, parse_gps, rows_for_image, write_csv
 
@@ -46,3 +46,8 @@ def test_size_and_benchmark_summary(tmp_path):
     assert size_mb(d) == 2.0 and export_record("ncnn", d, [960, 1280])["imgsz_hw"] == [960, 1280]
     s = summarize([100.0, 200.0, 300.0, 400.0])
     assert s["median_ms"] == 250.0 and s["fps_median"] == 4.0 and s["images"] == 4
+
+
+def test_peak_memory_units_differ_between_linux_and_macos():
+    assert peak_rss_mb(1024 * 1024, "linux") == 1024.0      # kB
+    assert peak_rss_mb(1024 * 1024 * 1024, "darwin") == 1024.0  # bytes

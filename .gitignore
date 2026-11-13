@@ -32,3 +32,6 @@ venv/
 
 # OS
 .DS_Store
+
+# Phase 6 benchmark work folder (models and third-party images)
+phase6/

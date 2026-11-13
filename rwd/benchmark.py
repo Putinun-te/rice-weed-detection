@@ -25,7 +25,19 @@ def cpu_name() -> str:
                 return line.split(":", 1)[1].strip()
     except OSError:
         pass
+    if sys.platform == "darwin":  # macOS has no /proc/cpuinfo
+        try:
+            out = subprocess.run(["sysctl", "-n", "machdep.cpu.brand_string"], capture_output=True, text=True)
+            if out.stdout.strip():
+                return out.stdout.strip()
+        except OSError:
+            pass
     return platform.processor() or platform.machine()
+
+
+def peak_rss_mb(ru_maxrss: int, system: str = sys.platform) -> float:
+    """ru_maxrss is in kilobytes on Linux and in bytes on macOS."""
+    return ru_maxrss / 1024**2 if system == "darwin" else ru_maxrss / 1024
 
 
 def summarize(times_ms: list[float]) -> dict:
@@ -48,7 +60,7 @@ def run_one(weights: Path, images: list[Path], imgsz: list[int], conf: float, wa
         t = time.perf_counter()
         model.predict(str(p), **kw)
         times.append((time.perf_counter() - t) * 1000)
-    peak_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024  # Linux: kB
+    peak_mb = peak_rss_mb(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
     return {"weights": weights.name, **summarize(times), "peak_rss_mb": round(peak_mb)}
 
 
