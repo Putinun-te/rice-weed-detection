@@ -16,6 +16,7 @@ bash ~/rice-weed-detection/scripts/setup_env.sh
 ```
 
 Start with `notebooks/00_overview.ipynb` to see what has been done so far.
+Run any notebook from a terminal with `.venv/bin/python scripts/run_notebook.py notebooks/<name>.ipynb`.
 Then either open `notebooks/01_data_setup.ipynb` and pick **Kernel → Change Kernel → Python (rwd)**,
 or run everything from a terminal in the background:
 
