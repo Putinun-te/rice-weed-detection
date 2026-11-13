@@ -1,0 +1,17 @@
+# Config for rwd.add_extra: WeedyRice dataset + CoFly-WeedDB as a train-only second class.
+# CoFly-WeedDB: Zenodo 10.5281/zenodo.6697343, CC BY 4.0, cotton field, see DATASET.md.
+# Its weeds are not weedy rice, so they become class 1 `other_weed`. Val and test stay WeedyRice only.
+# Paths are relative to this file's folder.
+
+base_dataset: ../data/weedyrice_seg
+extra_images: ../data/raw/cofly/CoFly-WeedDB/images
+extra_masks: ../data/raw/cofly/CoFly-WeedDB/labels_1d    # class-id PNG: 0 background, 1-3 weed species
+out_dir: ../data/weedyrice_cofly_seg
+
+extra_class: other_weed
+extra_prefix: cofly_
+extra_group: cofly-2019-07-03
+extra_altitude: 5m
+
+min_area_px: 20
+epsilon_px: 1.0
