@@ -66,3 +66,8 @@ def test_test_split_is_guarded(tmp_path):
     (tmp_path / "run/eval_test.json").write_text("{}")
     with pytest.raises(SystemExit, match="already used"):
         main(["--weights", str(w), "--split", "test", "--final", "--conf", "0.25"])
+
+
+def test_tag_is_refused_on_test_split(tmp_path):
+    with pytest.raises(SystemExit, match="val only"):
+        main(["--weights", str(tmp_path / "w/weights/best.onnx"), "--split", "test", "--final", "--tag", "onnx"])

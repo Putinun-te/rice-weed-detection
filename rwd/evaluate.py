@@ -95,7 +95,7 @@ def error_overlay(image_bgr: np.ndarray, pred: np.ndarray, gt: np.ndarray, alpha
     return cv2.addWeighted(tint, alpha, rgb, 1 - alpha, 0)
 
 
-def predict_mask(model, image_path: Path, conf: float, imgsz: int, device, class_id: int = 0) -> np.ndarray:
+def predict_mask(model, image_path: Path, conf: float, imgsz, device, class_id: int = 0) -> np.ndarray:
     """Union of predicted masks of one class. Other classes (e.g. other_weed) are ignored."""
     r = model.predict(str(image_path), imgsz=imgsz, conf=conf, device=device, verbose=False, retina_masks=True,
                       classes=[class_id])[0]
@@ -110,8 +110,9 @@ def read_groups(groups_csv: Path) -> dict[str, dict]:
         return {r["image"]: r for r in csv.DictReader(f)}
 
 
-def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], imgsz: int = 1280, device=0,
-             class_id: int = 0) -> dict:
+def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], imgsz=1280, device=0,
+             class_id: int = 0, tag: str = "") -> dict:
+    """imgsz: an int, or [height, width] for an exported model with a fixed input size."""
     from ultralytics import YOLO
 
     data = load_data_yaml(data_yaml)
@@ -119,7 +120,7 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
         raise SystemExit(f"split {split!r} is not in {data_yaml}")
     images = list_images(data.splits[split])
     groups = read_groups(data.root / "groups.csv")
-    model = YOLO(str(weights))
+    model = YOLO(str(weights), task="segment")  # task is needed for exported models (.onnx, NCNN folder)
 
     per_conf, per_image = {}, {}
     for conf in confs:
@@ -136,7 +137,7 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
 
     val = model.val(data=str(data_yaml), split=split, imgsz=imgsz, device=device, plots=False, verbose=False,
                     classes=[class_id],
-                    project=str(weights.resolve().parent.parent), name=f"eval_{split}_instance", exist_ok=True)
+                    project=str(weights.resolve().parent.parent), name=f"eval_{split}{tag}_instance", exist_ok=True)
     instance = {k: round(float(v), 4) for k, v in val.results_dict.items() if "(M)" in k}
     return {"weights": str(weights), "data": str(data_yaml), "split": split, "imgsz": imgsz, "images": len(images),
             "class": data.names[class_id],
@@ -150,14 +151,19 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--data", type=Path, default=DEFAULT_DATA)
     ap.add_argument("--split", choices=["val", "test"], default="val")
     ap.add_argument("--conf", type=float, nargs="+", default=[0.25])
-    ap.add_argument("--imgsz", type=int, default=1280)
+    ap.add_argument("--imgsz", type=int, nargs="+", default=[1280],
+                    help="one number, or height width for an exported model (e.g. 960 1280)")
+    ap.add_argument("--tag", default="", help="suffix for the output file, e.g. onnx -> eval_val_onnx.json (val only)")
     ap.add_argument("--device", default="0")
     ap.add_argument("--final", action="store_true", help="required for --split test (used once)")
     args = ap.parse_args(argv)
 
     run_dir = args.weights.resolve().parent.parent
-    out = run_dir / f"eval_{args.split}.json"
+    tag = f"_{args.tag}" if args.tag else ""
+    out = run_dir / f"eval_{args.split}{tag}.json"
     if args.split == "test":
+        if args.tag:
+            raise SystemExit("--tag is for val only: the test split is used once per run.")
         if not args.final:
             raise SystemExit("The test split is used once, at the end, with the owner's OK. Add --final to confirm.")
         if len(args.conf) != 1:
@@ -166,7 +172,8 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit(f"{out} exists: the test split was already used for this run. Not running again.")
 
     device = args.device if args.device == "cpu" else int(args.device)
-    report = evaluate(args.weights, args.data, args.split, args.conf, args.imgsz, device)
+    imgsz = args.imgsz[0] if len(args.imgsz) == 1 else args.imgsz
+    report = evaluate(args.weights, args.data, args.split, args.conf, imgsz, device, tag=tag)
     out.write_text(json.dumps(report, indent=2))
     print(f"split: {args.split} ({report['images']} images)" + ("" if args.split == "test" else "  [model selection only, not publishable]"))
     print(f"{'conf':>6} {'precision':>10} {'recall':>8} {'IoU':>8} {'img IoU median':>15}")
