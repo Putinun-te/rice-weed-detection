@@ -1,9 +1,14 @@
 # Rice-Weed Detection
 
-Weed detection in rice fields from UAV RGB images, with Ultralytics YOLO trained on
-Amazon SageMaker Studio Lab and exported to NCNN/ONNX for edge boards.
+Weedy-rice detection in rice fields from UAV RGB images, with Ultralytics YOLO (segmentation),
+exported to ONNX/NCNN, with detection-only inference that logs to CSV.
 
-Status: Phases 2-5 done on public data (data tooling, training, one held-out test evaluation, export and CSV inference). Results and limits: [docs/HANDOFF.md](docs/HANDOFF.md). See [docs/PLAN.md](docs/PLAN.md) and [DATASET.md](DATASET.md).
+Status: finished on public data (Track B). Results, limits and how to reproduce: [docs/RESULTS.md](docs/RESULTS.md).
+Work log: [docs/HANDOFF.md](docs/HANDOFF.md). Plan: [docs/PLAN.md](docs/PLAN.md). Data: [DATASET.md](DATASET.md).
+
+Held-out test result (247 images from a site and date not used for training, `yolo26n-seg`, confidence 0.25):
+pixel precision 0.889, pixel recall 0.697, pixel IoU 0.641 for weedy rice. The goal of recall around 0.80 was
+not met. No field, drone or edge-board validation. Detection only: never connect the output to an actuator.
 
 ## On SageMaker Studio Lab (CPU runtime is enough for data)
 
