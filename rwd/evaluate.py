@@ -40,13 +40,14 @@ def rasterize(polygons: list[np.ndarray], height: int, width: int) -> np.ndarray
     return mask.astype(bool)
 
 
-def label_mask(image_path: Path, height: int, width: int) -> np.ndarray:
-    """Ground-truth mask from the YOLO-seg label file of an image (all classes merged)."""
+def label_mask(image_path: Path, height: int, width: int, class_id: int = 0) -> np.ndarray:
+    """Ground-truth mask of one class from the YOLO-seg label file of an image."""
     label = label_path_for(image_path)
     if not label.exists():
         return np.zeros((height, width), bool)
     lines, _ = parse_label_file(label, "segment", num_classes=10**6)
-    return rasterize([np.array(ln.coords).reshape(-1, 2) * [width, height] for ln in lines], height, width)
+    return rasterize([np.array(ln.coords).reshape(-1, 2) * [width, height] for ln in lines if ln.class_id == class_id],
+                     height, width)
 
 
 def pixel_counts(pred: np.ndarray, gt: np.ndarray) -> dict:
@@ -94,8 +95,10 @@ def error_overlay(image_bgr: np.ndarray, pred: np.ndarray, gt: np.ndarray, alpha
     return cv2.addWeighted(tint, alpha, rgb, 1 - alpha, 0)
 
 
-def predict_mask(model, image_path: Path, conf: float, imgsz: int, device) -> np.ndarray:
-    r = model.predict(str(image_path), imgsz=imgsz, conf=conf, device=device, verbose=False, retina_masks=True)[0]
+def predict_mask(model, image_path: Path, conf: float, imgsz: int, device, class_id: int = 0) -> np.ndarray:
+    """Union of predicted masks of one class. Other classes (e.g. other_weed) are ignored."""
+    r = model.predict(str(image_path), imgsz=imgsz, conf=conf, device=device, verbose=False, retina_masks=True,
+                      classes=[class_id])[0]
     h, w = r.orig_shape
     return rasterize(list(r.masks.xy) if r.masks is not None else [], h, w)
 
@@ -107,7 +110,8 @@ def read_groups(groups_csv: Path) -> dict[str, dict]:
         return {r["image"]: r for r in csv.DictReader(f)}
 
 
-def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], imgsz: int = 1280, device=0) -> dict:
+def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], imgsz: int = 1280, device=0,
+             class_id: int = 0) -> dict:
     from ultralytics import YOLO
 
     data = load_data_yaml(data_yaml)
@@ -121,8 +125,8 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
     for conf in confs:
         rows = []
         for p in images:
-            pred = predict_mask(model, p, conf, imgsz, device)
-            gt = label_mask(p, *pred.shape)
+            pred = predict_mask(model, p, conf, imgsz, device, class_id)
+            gt = label_mask(p, *pred.shape, class_id)
             meta = groups.get(p.relative_to(data.root).as_posix(), {})
             rows.append({"image": p.name, "group": meta.get("group", "unknown"),
                          "altitude": altitude_band(meta.get("altitude")), **pixel_counts(pred, gt)})
@@ -131,9 +135,11 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
         per_conf[key] = {"all": summarize(rows), "by_altitude": summarize(rows, "altitude"), "by_group": summarize(rows, "group")}
 
     val = model.val(data=str(data_yaml), split=split, imgsz=imgsz, device=device, plots=False, verbose=False,
+                    classes=[class_id],
                     project=str(weights.resolve().parent.parent), name=f"eval_{split}_instance", exist_ok=True)
     instance = {k: round(float(v), 4) for k, v in val.results_dict.items() if "(M)" in k}
     return {"weights": str(weights), "data": str(data_yaml), "split": split, "imgsz": imgsz, "images": len(images),
+            "class": data.names[class_id],
             "headline": "pixel precision / recall / IoU (union of predicted masks vs label mask)",
             "pixel": per_conf, "instance_default_conf": instance, "per_image": per_image}
 
