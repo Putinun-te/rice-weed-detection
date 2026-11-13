@@ -1,4 +1,7 @@
-# Handoff (2026-11-12, updated on the PC)
+# Handoff (project closed 2026-11-13)
+
+**Closed.** All six phases are done on public data. The summary to read first is `docs/RESULTS.md`.
+This file is the work log.
 
 First written on the owner's MacBook, updated in the first session on the owner's Windows PC
 (WSL2 Ubuntu 26.04, RTX 2080 SUPER 8 GB, driver 620.67).
@@ -143,16 +146,23 @@ optional runs and `yolo26s-seg.pt`. Kept for every run: `best.pt`, `last.pt`, `r
 `metrics.json`, `eval_val.json`, so `00_overview.ipynb` still shows the comparison. Finished runs can no
 longer be resumed from a mid-run checkpoint.
 
-## Next steps
+## Closed (2026-11-13). If work resumes
 
-1. Model work is stopped (owner, 2026-11-13): `yolo26n-seg` first run is the model. Four other
-   variants were tried on val and none beat it.
-1b. Phase 6 (owner's OK 2026-11-13): final write-up is `docs/RESULTS.md`. The MacBook benchmark is run
-   by another session with `scripts/mac_benchmark.sh`; put its numbers in the "MacBook (Apple M4)" row
-   of the speed table in `docs/RESULTS.md` (state the exact chip), then the project is closed.
-2. No drone is available, so new field data is not planned. The only UAV weedy-rice dataset found
-   (2026-11-13 search) is the one already used.
-3. Notebooks keep their outputs locally; the `nbstrip` git filter (set by `scripts/setup_env.sh`)
+State at close: model `yolo26n-seg` (first run), one test evaluation, exports checked on val, CPU
+benchmarks on the PC (i9-9900KS) and the MacBook Pro M4. 70 tests pass. Nothing is running.
+
+The MacBook numbers were entered by the session on the Mac from its own
+`phase6/benchmark_cpu_Darwin_arm64.json`. That file is not in git (`phase6/` is ignored), so the
+numbers were not cross-checked from the PC.
+
+If someone picks this up again:
+1. The limit is data, not model size: two training dates, one region. New UAV data from other fields
+   and dates is the change most likely to help. Keep one site/date untouched as a new test split.
+2. The current test split has been used once for `yolo26n-seg`. Any further evaluation on it is a
+   second look and must be labelled.
+3. Untried idea: a semantic-segmentation model, which fits patches without instance boundaries.
+4. Raspberry Pi 5: `docs/EDGE_CHECKLIST.md`, untested on hardware.
+5. Notebooks keep their outputs locally; the `nbstrip` git filter (set by `scripts/setup_env.sh`)
    commits them without outputs, so no third-party image reaches git.
 
 ## PC setup (WSL2 Ubuntu, done by the next session with the owner)
