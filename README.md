@@ -10,6 +10,16 @@ Held-out test result (247 images from a site and date not used for training, `yo
 pixel precision 0.889, pixel recall 0.697, pixel IoU 0.641 for weedy rice. The goal of recall around 0.80 was
 not met. No field, drone or edge-board validation. Detection only: never connect the output to an actuator.
 
+## Data credit
+
+Trained and evaluated on **WeedyRice-RGBMS-DB** (CC BY 4.0), a third-party dataset that is not part of this
+repository: Nguyen, V. H., Le, C.-D., Truong, M.-T., Bui, M.-P., Le, T.-P. (2025). *WeedyRice-RGBMS-DB: A
+dataset of aligned RGB and multispectral UAV imagery for semantic segmentation of weedy rice.* Mendeley Data,
+V1, doi:[10.17632/vt4s83pxx6.1](https://doi.org/10.17632/vt4s83pxx6.1); Data in Brief,
+doi:[10.1016/j.dib.2025.112237](https://doi.org/10.1016/j.dib.2025.112237).
+One optional experiment also used CoFly-WeedDB (Krestenitis et al., 2022, CC BY 4.0); the released model does not.
+Full records: [DATASET.md](DATASET.md). Result files: [docs/results/](docs/results/).
+
 ## On SageMaker Studio Lab (CPU runtime is enough for data)
 
 Studio Lab's default env is Python 3.9 with pinned packages, so the project uses its own `.venv`

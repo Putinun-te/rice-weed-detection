@@ -61,6 +61,15 @@ CPU speed, whole predict call per 960x1280 image, 20 images:
 Times are medians. The M4 run (2026-11-13, `scripts/mac_benchmark.sh`) had other apps open.
 These are laptop/desktop CPU numbers, a rough proxy only.
 
+## Data credit
+
+Trained and evaluated on **WeedyRice-RGBMS-DB** (CC BY 4.0), a third-party dataset that is not part of this
+repository: Nguyen, V. H., Le, C.-D., Truong, M.-T., Bui, M.-P., Le, T.-P. (2025). *WeedyRice-RGBMS-DB: A
+dataset of aligned RGB and multispectral UAV imagery for semantic segmentation of weedy rice.* Mendeley Data,
+V1, doi:[10.17632/vt4s83pxx6.1](https://doi.org/10.17632/vt4s83pxx6.1); Data in Brief,
+doi:[10.1016/j.dib.2025.112237](https://doi.org/10.1016/j.dib.2025.112237).
+Source files for the numbers on this page: [`results/`](results/).
+
 ## What cannot be claimed
 
 - Field validation in Thai rice fields, or on any field, season, camera or altitude outside the

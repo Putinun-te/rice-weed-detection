@@ -1,0 +1,40 @@
+{
+  "note": "CPU of this computer only. Rough proxy, not a Raspberry Pi or drone result. Speed, not accuracy.",
+  "cpu": "Intel(R) Core(TM) i9-9900KS CPU @ 4.00GHz",
+  "logical_cores": 16,
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "imgsz_hw": [
+    960,
+    1280
+  ],
+  "conf": 0.25,
+  "results": [
+    {
+      "weights": "best.pt",
+      "images": 20,
+      "median_ms": 133.7,
+      "mean_ms": 132.5,
+      "p90_ms": 144.1,
+      "fps_median": 7.48,
+      "peak_rss_mb": 1073
+    },
+    {
+      "weights": "best.onnx",
+      "images": 20,
+      "median_ms": 152.8,
+      "mean_ms": 157.9,
+      "p90_ms": 185.9,
+      "fps_median": 6.54,
+      "peak_rss_mb": 1372
+    },
+    {
+      "weights": "best_ncnn_model",
+      "images": 20,
+      "median_ms": 212.7,
+      "mean_ms": 214.3,
+      "p90_ms": 230.6,
+      "fps_median": 4.7,
+      "peak_rss_mb": 1355
+    }
+  ]
+}

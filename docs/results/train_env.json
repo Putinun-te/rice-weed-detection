@@ -1,0 +1,24 @@
+{
+  "note": "Training settings and environment of the chosen run. Validation scores removed: not publishable.",
+  "model": "yolo26n-seg.pt",
+  "task": "segment",
+  "data": "data/weedyrice_seg/data.yaml",
+  "imgsz": 1280,
+  "epochs": 100,
+  "batch": 3,
+  "seed": 0,
+  "env": {
+    "python": "3.12.16",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.211",
+    "cuda_available": true,
+    "cuda_version": "13.2",
+    "gpu": "NVIDIA GeForce RTX 2080 SUPER",
+    "vram_gb": 8.0,
+    "commit": "05a519468def12c224b59e99061dfe4b88070450",
+    "dirty": false
+  },
+  "smoke": false,
+  "train_minutes_this_session": 49.6
+}

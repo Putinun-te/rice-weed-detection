@@ -1,0 +1,45 @@
+{
+  "note": "Only the .pt model was evaluated on test. Exports are checked on val only.",
+  "source": "runs/weedyrice_yolo26n-seg_1280/weights/best.pt",
+  "exports": [
+    {
+      "format": "pt",
+      "path": "runs/weedyrice_yolo26n-seg_1280/weights/best.pt",
+      "size_mb": 6.42,
+      "imgsz_hw": [
+        960,
+        1280
+      ]
+    },
+    {
+      "format": "onnx",
+      "path": "runs/weedyrice_yolo26n-seg_1280/weights/best.onnx",
+      "size_mb": 10.93,
+      "imgsz_hw": [
+        960,
+        1280
+      ]
+    },
+    {
+      "format": "ncnn",
+      "path": "runs/weedyrice_yolo26n-seg_1280/weights/best_ncnn_model",
+      "size_mb": 10.72,
+      "imgsz_hw": [
+        960,
+        1280
+      ]
+    }
+  ],
+  "env": {
+    "python": "3.12.16",
+    "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "torch": "2.15.0+cu132",
+    "ultralytics": "8.4.211",
+    "cuda_available": true,
+    "cuda_version": "13.2",
+    "gpu": "NVIDIA GeForce RTX 2080 SUPER",
+    "vram_gb": 8.0,
+    "commit": "94820af8e565e7cece591a03e1406563598a6744",
+    "dirty": true
+  }
+}
