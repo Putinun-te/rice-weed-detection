@@ -1,0 +1,24 @@
+# yolo26n-seg on WeedyRice + CoFly-WeedDB (train-only class other_weed). Compare with train.yaml on val, class weedy_rice only.
+
+model: yolo26n-seg.pt            # config value. "-seg" = masks. "yolo26n.pt" would train boxes only.
+data: ../data/weedyrice_cofly_seg/data.yaml
+project: ../runs                 # outside git
+name: weedyrice_cofly_yolo26n-seg_1280
+
+imgsz: 1280                      # images are 1280x960; fall back to 960 or tiles (640) if memory runs out
+epochs: 100
+patience: 30                     # stop early if val does not improve for 30 epochs
+batch: 3                         # fixed (not auto) so a resumed run is the same; batch 4 used 7.1 of 8 GB in the smoke run
+workers: 4
+seed: 0
+deterministic: true
+amp: true
+save_period: 5                   # checkpoint every 5 epochs, so a killed WSL session loses little
+device: 0                        # GPU index, or "cpu"
+
+# Extra Ultralytics train arguments (augmentation etc.). Top-down drone images: vertical flip is safe.
+extra:
+  flipud: 0.5
+  fliplr: 0.5
+  degrees: 0.0
+  plots: true
