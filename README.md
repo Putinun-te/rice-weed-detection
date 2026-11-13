@@ -3,7 +3,7 @@
 Weed detection in rice fields from UAV RGB images, with Ultralytics YOLO trained on
 Amazon SageMaker Studio Lab and exported to NCNN/ONNX for edge boards.
 
-Status: Phase 2 (data tooling). No model, no results. Next steps: [docs/HANDOFF.md](docs/HANDOFF.md). See [docs/PLAN.md](docs/PLAN.md) and [DATASET.md](DATASET.md).
+Status: Phases 2-5 done on public data (data tooling, training, one held-out test evaluation, export and CSV inference). Results and limits: [docs/HANDOFF.md](docs/HANDOFF.md). See [docs/PLAN.md](docs/PLAN.md) and [DATASET.md](DATASET.md).
 
 ## On SageMaker Studio Lab (CPU runtime is enough for data)
 
@@ -72,3 +72,16 @@ Training evaluates on the val split only; the test split is used once, in Phase 
 Headline metric: pixel precision, recall and IoU, with the instance metrics next to it
 (`docs/PLAN.md`). The test split is evaluated once, with `--split test --conf <chosen> --final`.
 The same steps are in `notebooks/03_evaluate.ipynb`.
+
+## Export and inference (Phase 5)
+
+```bash
+.venv/bin/python -m pip install -r requirements-export.txt
+.venv/bin/python -m rwd.export --weights runs/<name>/weights/best.pt            # ONNX + NCNN, input 960x1280
+.venv/bin/python -m rwd.benchmark --weights runs/<name>/weights/best.onnx --images <folder>
+.venv/bin/python -m rwd.infer --weights runs/<name>/weights/best.onnx --source <folder> --out detections.csv
+```
+
+The same steps are in `notebooks/05_export_infer.ipynb`. `rwd.infer` only writes a CSV log (and optional
+overlay images): detection only, never connected to an actuator. CPU timings describe the computer they
+were measured on; nothing has been run on a Raspberry Pi (`docs/EDGE_CHECKLIST.md` is untested).

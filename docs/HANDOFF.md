@@ -11,7 +11,8 @@ First written on the owner's MacBook, updated in the first session on the owner'
 | 2. Data tooling | **Done.** 44 synthetic tests pass (Python 3.12). Real dataset built and validated on the PC, see below. Waiting for the owner's OK. |
 | 3. Training | **Four runs done** (2026-11-12/13): `yolo26n-seg`, `yolo26s-seg`, `yolo26s-seg` + stronger augmentation, `yolo26n-seg` + CoFly extra class. On val the small model ties the nano model and the augmentation variant is worse. See below. |
 | 4. Test | **Done once for `yolo26n-seg` at conf 0.25** (2026-11-13 00:04). See "Phase 4 result". The other two runs have not touched test. |
-| 5-6 | Not started. |
+| 5. Export and inference | **Done on the PC** (2026-11-13): ONNX and NCNN export, CSV-logging inference, CPU benchmark. See "Phase 5 result". Waiting for the owner's OK. |
+| 6 | Not started: benchmark on the MacBook, final write-up. |
 
 Start with `notebooks/00_overview.ipynb`: it reads the files on disk and shows the state of every
 phase, the val comparison, the test result and the recent commits. The owner works from notebooks.
@@ -106,11 +107,36 @@ when it marks weedy rice but misses about 30% of the weedy-rice area.
 Rules from here: the script refuses a second test run for this model. Any other model evaluated on
 this test split is a second look and must be labelled as such. Do not re-run test at another conf.
 
+## Phase 5 result (PC, 2026-11-13)
+
+Model: `yolo26n-seg` first run (the one with the test result). Notebook: `notebooks/05_export_infer.ipynb`.
+Code: `rwd/export.py`, `rwd/infer.py`, `rwd/benchmark.py`; extra packages in `requirements-export.txt`.
+
+- Export at fixed input 960x1280: `best.pt` 6.4 MB, `best.onnx` 10.9 MB, `best_ncnn_model/` 10.7 MB
+  (in `runs/<name>/weights/`, not in git; listed in `export.json`).
+- Export check on val at conf 0.25 (not publishable): ONNX and NCNN give the same pixel precision /
+  recall / IoU as the `.pt` model (0.804 / 0.751 / 0.635). Only the `.pt` model was evaluated on test.
+- CPU speed on this PC only, Intel Core i9-9900KS, 16 logical cores, 20 val images, whole predict call:
+
+| Format | Median ms | Images/s | Peak RAM MB |
+|---|---|---|---|
+| pt (PyTorch CPU) | 134 | 7.5 | 1073 |
+| ONNX Runtime | 153 | 6.5 | 1372 |
+| NCNN | 213 | 4.7 | 1355 |
+
+  A desktop CPU is a rough proxy. No Raspberry Pi or on-drone number exists; `docs/EDGE_CHECKLIST.md`
+  is untested on hardware.
+- `rwd.infer` writes one CSV row per detected region (class name, confidence, box, mask area, and
+  lat/lon/altitude parsed from the file name), plus a row with `detection = 0` for an image with
+  nothing found. Detection only, no actuator.
+- `rwd.evaluate` takes `--imgsz H W` and `--tag` for exported models; `--tag` is refused on test.
+
 ## Next steps
 
-1. Owner decides: stop model work here and go to Phase 5 with `yolo26n-seg` (WeedyRice only), which
-   is still the best run on val. Four variants were tried; none beat it. A semantic-segmentation
-   model is the one idea left untried.
+1. Model work is stopped (owner, 2026-11-13): `yolo26n-seg` first run is the model. Four other
+   variants were tried on val and none beat it.
+1b. Phase 6, after the owner's OK: run `rwd.benchmark` on the MacBook M4 with `best.onnx`, then the
+   final write-up (README status, limits, how to reproduce).
 2. No drone is available, so new field data is not planned. The only UAV weedy-rice dataset found
    (2026-11-13 search) is the one already used.
 3. Notebooks keep their outputs locally; the `nbstrip` git filter (set by `scripts/setup_env.sh`)
