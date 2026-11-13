@@ -145,6 +145,13 @@ def evaluate(weights: Path, data_yaml: Path, split: str, confs: list[float], img
             "pixel": per_conf, "instance_default_conf": instance, "per_image": per_image}
 
 
+def _fmt(value) -> str:
+    """Table cell: 'n/a' when a score is undefined (e.g. nothing predicted at this conf)."""
+    if value is None:
+        return "n/a"
+    return f"{value:.3f}" if isinstance(value, float) else str(value)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--weights", required=True, type=Path)
@@ -178,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"split: {args.split} ({report['images']} images)" + ("" if args.split == "test" else "  [model selection only, not publishable]"))
     print(f"{'conf':>6} {'precision':>10} {'recall':>8} {'IoU':>8} {'img IoU median':>15}")
     for conf, r in report["pixel"].items():
-        a = r["all"]
+        a = {k: _fmt(v) for k, v in r["all"].items()}
         print(f"{conf:>6} {a['precision']:>10} {a['recall']:>8} {a['iou']:>8} {a['image_iou_median']:>15}")
     print("instance (Ultralytics default conf):", report["instance_default_conf"])
     print(f"wrote {out}")

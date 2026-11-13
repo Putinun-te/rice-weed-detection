@@ -71,3 +71,17 @@ def test_test_split_is_guarded(tmp_path):
 def test_tag_is_refused_on_test_split(tmp_path):
     with pytest.raises(SystemExit, match="val only"):
         main(["--weights", str(tmp_path / "w/weights/best.onnx"), "--split", "test", "--final", "--tag", "onnx"])
+
+
+def test_summary_prints_na_when_nothing_predicted(monkeypatch, tmp_path, capsys):
+    """Found on the Mac smoke run: precision is None when no pixel is predicted, and the table crashed."""
+    import rwd.evaluate as ev
+
+    undefined = {"images": 4, "precision": None, "recall": 0.0, "iou": 0.0, "image_iou_median": 0.0, "image_iou_min": 0.0}
+    report = {"images": 4, "pixel": {"0.5": {"all": undefined}}, "instance_default_conf": {}}
+    monkeypatch.setattr(ev, "evaluate", lambda *a, **k: report)
+    weights = tmp_path / "run" / "weights" / "best.pt"
+    weights.parent.mkdir(parents=True)
+    assert main(["--weights", str(weights), "--split", "val", "--conf", "0.5", "--device", "cpu"]) == 0
+    assert "n/a" in capsys.readouterr().out
+    assert (tmp_path / "run" / "eval_val.json").exists()
