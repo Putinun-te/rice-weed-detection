@@ -7,7 +7,7 @@ Detection only: the model output is a log, never a command to a sprayer or any a
 
 A reproducible pipeline for finding weedy rice in UAV RGB images of rice fields: dataset preparation
 and validation, training, pixel-level evaluation with a guarded test split, ONNX/NCNN export, and
-inference that logs to CSV. 69 tests on synthetic data. One notebook per step in `notebooks/`.
+inference that logs to CSV. 70 tests on synthetic data. One notebook per step in `notebooks/`.
 
 ## Data and model
 
@@ -56,8 +56,9 @@ CPU speed, whole predict call per 960x1280 image, 20 images:
 | Computer | PyTorch | ONNX Runtime | NCNN | Peak RAM |
 |---|---|---|---|---|
 | Desktop, Intel Core i9-9900KS (16 logical cores) | 134 ms | 153 ms | 213 ms | 1.1 to 1.4 GB |
-| MacBook (Apple M4) | pending | pending | pending | pending |
+| MacBook Pro, Apple M4 (10 logical cores) | 126 ms | 107 ms | 70 ms | 0.8 to 1.1 GB |
 
+Times are medians. The M4 run (2026-11-13, `scripts/mac_benchmark.sh`) had other apps open.
 These are laptop/desktop CPU numbers, a rough proxy only.
 
 ## What cannot be claimed

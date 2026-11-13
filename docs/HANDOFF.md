@@ -12,7 +12,7 @@ First written on the owner's MacBook, updated in the first session on the owner'
 | 3. Training | **Four runs done** (2026-11-12/13): `yolo26n-seg`, `yolo26s-seg`, `yolo26s-seg` + stronger augmentation, `yolo26n-seg` + CoFly extra class. On val the small model ties the nano model and the augmentation variant is worse. See below. |
 | 4. Test | **Done once for `yolo26n-seg` at conf 0.25** (2026-11-13 00:04). See "Phase 4 result". The other two runs have not touched test. |
 | 5. Export and inference | **Done on the PC** (2026-11-13): ONNX and NCNN export, CSV-logging inference, CPU benchmark. See "Phase 5 result". Waiting for the owner's OK. |
-| 6. Close-out | Write-up done (`docs/RESULTS.md`). MacBook benchmark pending (other session). |
+| 6. Close-out | Write-up done (`docs/RESULTS.md`). MacBook M4 benchmark done 2026-11-13 (row filled in RESULTS.md). |
 
 Start with `notebooks/00_overview.ipynb`: it reads the files on disk and shows the state of every
 phase, the val comparison, the test result and the recent commits. The owner works from notebooks.
