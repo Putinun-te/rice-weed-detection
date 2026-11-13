@@ -20,6 +20,8 @@ doi:[10.1016/j.dib.2025.112237](https://doi.org/10.1016/j.dib.2025.112237).
 One optional experiment also used CoFly-WeedDB (Krestenitis et al., 2022, CC BY 4.0); the released model does not.
 Full records: [DATASET.md](DATASET.md). Result files: [docs/results/](docs/results/).
 
+Per-model results and charts for all four trained models: [docs/MODELS.md](docs/MODELS.md).
+
 Trained model (PyTorch, ONNX, NCNN) and the test result file: [release v1.0.0](https://github.com/Putinun-te/rice-weed-detection/releases/tag/v1.0.0).
 
 ## On SageMaker Studio Lab (CPU runtime is enough for data)

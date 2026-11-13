@@ -44,7 +44,9 @@ Reading:
 
 Three other variants (a larger model, stronger augmentation, and CoFly-WeedDB added as a second
 class) were compared on the validation split only and none was clearly better, so they were not
-evaluated on test. They are kept as optional configs. Details: `docs/HANDOFF.md`.
+evaluated on test. They are kept as optional configs, and their checkpoints are in the
+[optional-models release](https://github.com/Putinun-te/rice-weed-detection/releases/tag/optional-models-2026-11-13).
+Per-model results and charts: [`MODELS.md`](MODELS.md). Details: `docs/HANDOFF.md`.
 
 ## Export and speed
 

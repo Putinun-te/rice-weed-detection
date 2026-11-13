@@ -161,6 +161,13 @@ The release copy of `best.pt` has the same weights as the evaluated model; local
 scores were removed from its metadata, and the ONNX/NCNN files were exported again from that copy and
 checked on val (same pixel scores). The original files stay in `runs/` on the PC only.
 
+Added 2026-11-14 with the owner's OK: `docs/MODELS.md` (per-model validation results, settings, credits), charts
+and `val_comparison.json` in `docs/results/` (`scripts/make_model_report.py`), and a prerelease
+`optional-models-2026-11-13` with the three optional checkpoints (`.pt` only, paths removed from metadata, weights
+checked identical). Validation numbers are published for model comparison only and labelled so; the three optional
+models still have no test evaluation. The charts are PNG files of numbers (no dataset images), a small
+departure from "never commit images" in `CLAUDE.md`, which exists to keep third-party photos out.
+
 If someone picks this up again:
 1. The limit is data, not model size: two training dates, one region. New UAV data from other fields
    and dates is the change most likely to help. Keep one site/date untouched as a new test split.

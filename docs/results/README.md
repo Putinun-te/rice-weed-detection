@@ -10,7 +10,12 @@ Source files behind the numbers in [`../RESULTS.md`](../RESULTS.md), copied from
 | `export.json` | Exported formats and file sizes. |
 | `benchmark_cpu.json` | CPU speed on the desktop PC (Intel Core i9-9900KS). The MacBook M4 numbers in `RESULTS.md` were measured on the Mac; that file was not copied here. |
 
-Validation-split scores are not included: they were used for model selection only.
+| `val_comparison.json` | Validation-split scores of all four trained models, per confidence (pixel) plus instance metrics. For comparing models only, see [`../MODELS.md`](../MODELS.md). |
+| `val_comparison.png`, `training_curves_val.png` | Charts of the validation comparison (numbers only, no dataset images). |
+| `test_result.png` | Chart of `eval_test.json`: the chosen model's test result by flight height. |
+
+Validation scores were used for model selection and are not a held-out result. `train_env.json` has them removed.
+Regenerate the JSON and charts with `.venv/bin/python scripts/make_model_report.py`.
 
 ## Data credit
 

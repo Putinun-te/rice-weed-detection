@@ -1,0 +1,205 @@
+{
+  "note": "Validation split (41 images, 2024-09-30), used to choose the model. Not a held-out result. Pixel scores are for class weedy_rice only. Test was evaluated once, for the chosen model only.",
+  "runs": {
+    "yolo26n-seg (chosen)": {
+      "model": "yolo26n-seg.pt",
+      "batch": 3,
+      "epochs_run": 99,
+      "train_minutes": 49.6,
+      "pixel_val": {
+        "0.05": {
+          "precision": 0.7291,
+          "recall": 0.8891,
+          "iou": 0.6683,
+          "image_iou_median": 0.6499
+        },
+        "0.1": {
+          "precision": 0.7558,
+          "recall": 0.8555,
+          "iou": 0.6703,
+          "image_iou_median": 0.6528
+        },
+        "0.15": {
+          "precision": 0.7814,
+          "recall": 0.8362,
+          "iou": 0.6777,
+          "image_iou_median": 0.6536
+        },
+        "0.25": {
+          "precision": 0.8044,
+          "recall": 0.7511,
+          "iou": 0.6351,
+          "image_iou_median": 0.636
+        },
+        "0.4": {
+          "precision": 0.8293,
+          "recall": 0.6072,
+          "iou": 0.5397,
+          "image_iou_median": 0.548
+        },
+        "0.5": {
+          "precision": 0.8312,
+          "recall": 0.518,
+          "iou": 0.4686,
+          "image_iou_median": 0.3567
+        }
+      },
+      "instance_val": {
+        "metrics/precision(M)": 0.5173,
+        "metrics/recall(M)": 0.4861,
+        "metrics/mAP50(M)": 0.4732,
+        "metrics/mAP50-95(M)": 0.1963
+      }
+    },
+    "yolo26s-seg": {
+      "model": "yolo26s-seg.pt",
+      "batch": 2,
+      "epochs_run": 100,
+      "train_minutes": 78.9,
+      "pixel_val": {
+        "0.05": {
+          "precision": 0.7792,
+          "recall": 0.8423,
+          "iou": 0.68,
+          "image_iou_median": 0.6459
+        },
+        "0.1": {
+          "precision": 0.8114,
+          "recall": 0.8158,
+          "iou": 0.6858,
+          "image_iou_median": 0.674
+        },
+        "0.15": {
+          "precision": 0.831,
+          "recall": 0.7845,
+          "iou": 0.6765,
+          "image_iou_median": 0.6638
+        },
+        "0.25": {
+          "precision": 0.8511,
+          "recall": 0.7288,
+          "iou": 0.6464,
+          "image_iou_median": 0.6228
+        },
+        "0.4": {
+          "precision": 0.8626,
+          "recall": 0.5715,
+          "iou": 0.5239,
+          "image_iou_median": 0.5642
+        },
+        "0.5": {
+          "precision": 0.8804,
+          "recall": 0.4813,
+          "iou": 0.4518,
+          "image_iou_median": 0.3737
+        }
+      },
+      "instance_val": {
+        "metrics/precision(M)": 0.6018,
+        "metrics/recall(M)": 0.5026,
+        "metrics/mAP50(M)": 0.5191,
+        "metrics/mAP50-95(M)": 0.1987
+      }
+    },
+    "yolo26s-seg + strong aug": {
+      "model": "yolo26s-seg.pt",
+      "batch": 2,
+      "epochs_run": 100,
+      "train_minutes": 99.8,
+      "pixel_val": {
+        "0.05": {
+          "precision": 0.7706,
+          "recall": 0.8168,
+          "iou": 0.6571,
+          "image_iou_median": 0.6257
+        },
+        "0.1": {
+          "precision": 0.8182,
+          "recall": 0.7789,
+          "iou": 0.664,
+          "image_iou_median": 0.6566
+        },
+        "0.15": {
+          "precision": 0.8349,
+          "recall": 0.7406,
+          "iou": 0.646,
+          "image_iou_median": 0.6162
+        },
+        "0.25": {
+          "precision": 0.8541,
+          "recall": 0.6413,
+          "iou": 0.578,
+          "image_iou_median": 0.5701
+        },
+        "0.4": {
+          "precision": 0.866,
+          "recall": 0.4448,
+          "iou": 0.4162,
+          "image_iou_median": 0.3436
+        },
+        "0.5": {
+          "precision": 0.8744,
+          "recall": 0.2311,
+          "iou": 0.2237,
+          "image_iou_median": 0.0785
+        }
+      },
+      "instance_val": {
+        "metrics/precision(M)": 0.5111,
+        "metrics/recall(M)": 0.4356,
+        "metrics/mAP50(M)": 0.4067,
+        "metrics/mAP50-95(M)": 0.155
+      }
+    },
+    "yolo26n-seg + CoFly": {
+      "model": "yolo26n-seg.pt",
+      "batch": 3,
+      "epochs_run": 100,
+      "train_minutes": 68.6,
+      "pixel_val": {
+        "0.05": {
+          "precision": 0.7496,
+          "recall": 0.8304,
+          "iou": 0.65,
+          "image_iou_median": 0.6327
+        },
+        "0.1": {
+          "precision": 0.797,
+          "recall": 0.7915,
+          "iou": 0.6587,
+          "image_iou_median": 0.6335
+        },
+        "0.15": {
+          "precision": 0.8258,
+          "recall": 0.7552,
+          "iou": 0.6514,
+          "image_iou_median": 0.6268
+        },
+        "0.25": {
+          "precision": 0.8549,
+          "recall": 0.6694,
+          "iou": 0.6011,
+          "image_iou_median": 0.5958
+        },
+        "0.4": {
+          "precision": 0.8758,
+          "recall": 0.5052,
+          "iou": 0.4714,
+          "image_iou_median": 0.4884
+        },
+        "0.5": {
+          "precision": 0.8825,
+          "recall": 0.346,
+          "iou": 0.3308,
+          "image_iou_median": 0.1059
+        }
+      },
+      "instance_val": {
+        "metrics/precision(M)": 0.4928,
+        "metrics/recall(M)": 0.4742,
+        "metrics/mAP50(M)": 0.4525,
+        "metrics/mAP50-95(M)": 0.1818
+      }
+    }
+  }
+}
