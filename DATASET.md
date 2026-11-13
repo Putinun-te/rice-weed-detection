@@ -71,7 +71,10 @@ on an external drive (listed without extracting).
   The other 165 images have no labels. Zenodo file: `CoFly-WeedDB.zip`.
 - Checked after download: `labels_1d` is a class-id mask (0 background, 1-3 weed classes; weed pixels are
   about 5% of the area). Masks are coarse hand-drawn polygons over cotton rows and bare soil, not rice
-  paddy. The 3 weed classes are not weedy rice. Not used for training or evaluation so far.
+  paddy. The 3 weed classes are not weedy rice.
+- Used once, 2026-11-13, as train-only extra data: all 3 weed classes merged into a second class
+  `other_weed` (`rwd.add_extra`, `configs/cofly.yaml`, dataset `data/weedyrice_cofly_seg`). Never in val or
+  test. It did not improve `weedy_rice` on val, so the chosen model does not use it.
 - Attribution if used: Krestenitis et al., CoFly-WeedDB, Data in Brief 45:108575 (2022), CC BY 4.0.
 
 ## Used datasets

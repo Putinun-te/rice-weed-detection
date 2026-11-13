@@ -9,7 +9,7 @@ First written on the owner's MacBook, updated in the first session on the owner'
 |---|---|
 | 1. Plan | Done and approved. See `docs/PLAN.md`. Track B: public data only, no drone, no Pi. |
 | 2. Data tooling | **Done.** 44 synthetic tests pass (Python 3.12). Real dataset built and validated on the PC, see below. Waiting for the owner's OK. |
-| 3. Training | **Three runs done** (2026-11-12/13): `yolo26n-seg`, `yolo26s-seg`, `yolo26s-seg` + stronger augmentation. On val the small model ties the nano model and the augmentation variant is worse. See below. |
+| 3. Training | **Four runs done** (2026-11-12/13): `yolo26n-seg`, `yolo26s-seg`, `yolo26s-seg` + stronger augmentation, `yolo26n-seg` + CoFly extra class. On val the small model ties the nano model and the augmentation variant is worse. See below. |
 | 4. Test | **Done once for `yolo26n-seg` at conf 0.25** (2026-11-13 00:04). See "Phase 4 result". The other two runs have not touched test. |
 | 5-6 | Not started. |
 
@@ -77,8 +77,13 @@ Val is 41 images from one date, so small differences mean nothing.
 | `yolo26n-seg` | 50 | 0.678 (0.15) | 0.78 / 0.84 | 0.52 / 0.49 / 0.47 |
 | `yolo26s-seg` | 79 | 0.686 (0.10) | 0.81 / 0.82 | 0.60 / 0.50 / 0.52 |
 | `yolo26s-seg` + aug | 100 | 0.664 (0.10) | 0.82 / 0.78 | 0.51 / 0.44 / 0.41 |
+| `yolo26n-seg` + CoFly-WeedDB as class `other_weed` | 68 | 0.659 (0.10) | 0.80 / 0.79 | 0.49 / 0.47 / 0.45 |
 
-Reading: a bigger model and stronger augmentation do not move val. The limit looks like the data
+The CoFly row (2026-11-13, `notebooks/04_extra_data_cofly.ipynb`, `configs/cofly.yaml`, `train_cofly.yaml`):
+201 CoFly-WeedDB images added to train only as a second class, val and test unchanged, scores for
+`weedy_rice` only (`rwd.evaluate` now filters by class). Recall drops at every conf, so it does not help.
+
+Reading: a bigger model, stronger augmentation and the cotton-field extra data do not move val. The limit looks like the data
 (two training dates), not model size. `yolo26n-seg` stays the model.
 
 ## Phase 4 result (PC, 2026-11-13) - held-out test, publishable with recall
@@ -103,8 +108,9 @@ this test split is a second look and must be labelled as such. Do not re-run tes
 
 ## Next steps
 
-1. Owner decides: stop model work here and go to Phase 5 with `yolo26n-seg`, or try one more idea
-   on val (a semantic-segmentation model, or CoFly-WeedDB as train-only extra, see `DATASET.md`).
+1. Owner decides: stop model work here and go to Phase 5 with `yolo26n-seg` (WeedyRice only), which
+   is still the best run on val. Four variants were tried; none beat it. A semantic-segmentation
+   model is the one idea left untried.
 2. No drone is available, so new field data is not planned. The only UAV weedy-rice dataset found
    (2026-11-13 search) is the one already used.
 3. Notebooks keep their outputs locally; the `nbstrip` git filter (set by `scripts/setup_env.sh`)
