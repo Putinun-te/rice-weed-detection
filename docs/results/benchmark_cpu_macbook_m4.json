@@ -1,0 +1,40 @@
+{
+  "note": "CPU of this computer only. Rough proxy, not a Raspberry Pi or drone result. Speed, not accuracy.",
+  "cpu": "Apple M4",
+  "logical_cores": 10,
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "imgsz_hw": [
+    960,
+    1280
+  ],
+  "conf": 0.25,
+  "results": [
+    {
+      "weights": "best.pt",
+      "images": 20,
+      "median_ms": 125.5,
+      "mean_ms": 130.9,
+      "p90_ms": 145.6,
+      "fps_median": 7.97,
+      "peak_rss_mb": 822
+    },
+    {
+      "weights": "best.onnx",
+      "images": 20,
+      "median_ms": 107.4,
+      "mean_ms": 109.1,
+      "p90_ms": 122.9,
+      "fps_median": 9.31,
+      "peak_rss_mb": 1131
+    },
+    {
+      "weights": "best_ncnn_model",
+      "images": 20,
+      "median_ms": 70.2,
+      "mean_ms": 75.2,
+      "p90_ms": 96.7,
+      "fps_median": 14.24,
+      "peak_rss_mb": 779
+    }
+  ]
+}

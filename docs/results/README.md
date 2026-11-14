@@ -8,8 +8,8 @@ Source files behind the numbers in [`../RESULTS.md`](../RESULTS.md), copied from
 | `eval_test.json` | The single evaluation on the held-out test split (247 images, Long Xuyen, 2025-01-15) at confidence 0.25: pixel precision / recall / IoU overall, by flight height and per image, plus instance metrics. |
 | `train_env.json` | Training settings, GPU, library versions and commit of the chosen run. |
 | `export.json` | Exported formats and file sizes. |
-| `benchmark_cpu.json` | CPU speed on the desktop PC (Intel Core i9-9900KS). The MacBook M4 numbers in `RESULTS.md` were measured on the Mac; that file was not copied here. |
-
+| `benchmark_cpu.json` | CPU speed on the desktop PC (Intel Core i9-9900KS). |
+| `benchmark_cpu_macbook_m4.json` | CPU speed on the MacBook Pro M4 run. |
 | `val_comparison.json` | Validation-split scores of all four trained models, per confidence (pixel) plus instance metrics. For comparing models only, see [`../MODELS.md`](../MODELS.md). |
 | `val_comparison.png`, `training_curves_val.png` | Charts of the validation comparison (numbers only, no dataset images). |
 | `test_result.png` | Chart of `eval_test.json`: the chosen model's test result by flight height. |
